@@ -1,7 +1,6 @@
 import parsing
 
 class Character:
-
     name = "Unknown adventurer"
     age = "0"
     ancestry = "Unknown"
@@ -17,8 +16,31 @@ class Character:
     resistances = []
     inventorModes = []
 
-    stats = {}
-    attributes =  {}
+    stats = {
+        "str":0,
+        "dex":0,
+        "con":0,
+        "int":0,
+        "wis":0,
+        "cha":0,
+        "breakdown":
+            {
+                "ancestryFree": [],
+                "ancestryBoosts": [],
+                "ancestryFlaws": [],
+                "backgroundBoosts": [],
+                "classBoosts":[],
+                "mapLevelledBoosts":{}
+            }
+    }
+    attributes =  {
+        "ancestryhp": 0,
+        "classhp": 0,
+        "bonushp": 0,
+        "bonushpPerLevel": 0,
+        "speed": 0,
+        "speedBonus": 0
+    }
 
     proficiencies =  {
         "classDC": 0,
@@ -64,12 +86,7 @@ class Character:
     equipment_containers = {}
     equipment = [{}]
 
-    specific_proficiencies = {
-        "trained": [],
-        "expert": [],
-        "master": [],
-        "legendary": []
-    }
+    specific_proficiencies = {}
 
     weapons = [{}]
     money = {}
@@ -78,29 +95,18 @@ class Character:
     focus_points = 0
     focus = {}
     formula = []
-    ac_total =  {
-        "acProfBonus": 0,
-        "acAbilityBonus": 0,
-        "acItemBonus": 0,
-        "acTotal": 0,
-        "shieldBonus": 0
-    }
+    ac_total =  {}
     pets = []
     familiars = []
 
     def __init__(self, jsonfile_path=""):
-        if jsonfile_path == "":
-            self.create_empty_character()
-        else:
+        if jsonfile_path!="":
             with open(jsonfile_path, 'r') as json_file:
                 json_data = parsing.parse_character_sheet(json_file)
             self.parse_into_fields(json_data['build'])
 
-    def create_empty_character(self):
-        pass
 
-
-    def get_name(self):
+    def print_info(self):
         print ("Your character's name is:", self.name + ", they are", self.char_class)
         print ("Their ancestry: ", self.ancestry)
         print ("Con: ", self.stats['con'])
@@ -144,3 +150,5 @@ class Character:
 
         except Exception as exc:
             pass
+
+

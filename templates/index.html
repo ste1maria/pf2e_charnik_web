@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Загрузка персонажа</title>
+</head>
+<body>
+  <h1>Загрузить персонажа</h1>
+
+  <form action="/character" method="get">
+    <label for="name">Имя файла (без .json):</label>
+    <input type="text" id="name" name="name" placeholder="mirra" required />
+    <button type="submit">Загрузить</button>
+  </form>
+
+<br><br>
+<form action="/upload" method="post" enctype="multipart/form-data">
+  <input type="file" name="charfile" accept=".json" required />
+  <button type="submit">Загрузить файл</button>
+</form>
+</body>
+</html>

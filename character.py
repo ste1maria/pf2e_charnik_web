@@ -1,4 +1,5 @@
 import parsing
+import os
 
 class Character:
     name = "Unknown adventurer"
@@ -15,7 +16,7 @@ class Character:
     rituals = []
     resistances = []
     inventorModes = []
-
+    hp = 0
     stats = {
         "str":0,
         "dex":0,
@@ -100,8 +101,10 @@ class Character:
     familiars = []
 
     def __init__(self, jsonfile_path=""):
-        if jsonfile_path!="":
-            with open(jsonfile_path, 'r') as json_file:
+        base_dir = os.path.dirname(__file__)  # путь к файлу character.py
+        full_path = os.path.join(base_dir, jsonfile_path)
+        if full_path!="":
+            with open(full_path, 'r') as json_file:
                 json_data = parsing.parse_character_sheet(json_file)
             self.parse_into_fields(json_data['build'])
 
@@ -147,6 +150,8 @@ class Character:
             self.ac_total = json_data['acTotal']
             self.pets = json_data['pets']
             self.familiars = json_data['familiars']
+            self.hp = self.attributes['ancestryhp'] + self.attributes['classhp'] \
+                    + self.attributes['bonushp']
 
         except Exception as exc:
             pass

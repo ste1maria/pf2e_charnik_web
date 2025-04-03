@@ -46,22 +46,51 @@ document.addEventListener("DOMContentLoaded", () => {
   const right = document.getElementById("screenRight");
 
   function updateScreen() {
-    track.style.transform = `translateX(-${currentScreen * 100}vw)`;
-  }
+        track.style.transform = `translateX(-${currentScreen * 100}vw)`;
 
-  left.addEventListener("click", () => {
-    if (currentScreen > 0) {
-      currentScreen--;
-      updateScreen();
+        const dots = document.querySelectorAll("#screenDots .dot");
+        dots.forEach((dot, index) => {
+            dot.classList.toggle("active", index === currentScreen);
+        });
     }
-  });
 
-  right.addEventListener("click", () => {
-    if (currentScreen < track.children.length - 1) {
-      currentScreen++;
-      updateScreen();
+    left.addEventListener("click", () => {
+        if (currentScreen > 0) {
+          currentScreen--;
+          updateScreen();
+        }
+    });
+
+    right.addEventListener("click", () => {
+        if (currentScreen < track.children.length - 1) {
+          currentScreen++;
+          updateScreen();
+        }
+    });
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    track.addEventListener("touchstart", e => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    track.addEventListener("touchend", e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    });
+
+    function handleSwipe() {
+      const diff = touchEndX - touchStartX;
+      if (Math.abs(diff) > 50) {
+        if (diff < 0 && currentScreen < track.children.length - 1) {
+          currentScreen++;
+        } else if (diff > 0 && currentScreen > 0) {
+          currentScreen--;
+        }
+        updateScreen();
+      }
     }
-  });
 }
 
   const name = getQueryParam("name");

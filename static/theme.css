@@ -5230,3 +5230,23 @@ a.text-dark:hover, a.text-dark:focus {
 .screen-nav.right {
   right: 1rem;
 }
+
+
+.screen-dots {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin: 0 6px;
+  background-color: #bbb;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.dot.active {
+  background-color: #542527;
+}

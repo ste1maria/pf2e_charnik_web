@@ -114,6 +114,7 @@ function renderCharacterList() {
     const li = document.createElement("li");
     const btn = document.createElement("button");
     btn.textContent = `${char.name} (уровень ${char.level})`;
+    btn.classList.add("btn-light");
     btn.addEventListener("click", () => {
     window.location.href = `/character?name=${encodeURIComponent(char.name)}`;
     });

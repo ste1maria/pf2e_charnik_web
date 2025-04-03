@@ -6,11 +6,11 @@
   <link rel="stylesheet" href={{ url_for('static', filename='theme.css') }}>
 </head>
 <body>
-	<button id="newCharacterBtn">New character</button>
+	<button id="newCharacterBtn" class="btn-light">New character</button>
 
 	<div id="newCharacterModal" class="modal hidden">
 	  <div class="modal-content">
-		<h2>Создание персонажа</h2>
+		<h2 class=".text-info">Создание персонажа</h2>
 		<button id="createNewBtn">Создать вручную</button>
 		<input type="file" id="importJsonInput" accept=".json" hidden />
 		<button id="importJsonBtn">Импорт из JSON</button>
@@ -20,7 +20,7 @@
 
 
 <div id="saved-characters">
-  <h3>Сохранённые персонажи</h3>
+  <h3 class=".text-info">Сохранённые персонажи</h3>
   <ul id="characterList"></ul>
 </div>
 

@@ -2,14 +2,35 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Персонаж</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Character</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
 </head>
 <body>
-  <div id="app">
-    <p>Загрузка персонажа...</p>
+  <div id="charSheet">
+    <p>Loading character sheet...</p>
   </div>
 
   <script src="{{ url_for('static', filename='character_sheet.js') }}"></script>
+
+  <template id="characterTemplate">
+  <div class="character-header">
+    <h1 id="charName"></h1>
+    <p><strong>Class:</strong> <span id="charClass"></span></p>
+    <p><strong>Level:</strong> <span id="charLevel"></span></p>
+    <p><strong>HP:</strong> <span id="charHP"></span></p>
+  </div>
+
+  <div class="screen-container">
+    <div class="screen-track" id="screenTrack">
+      <div class="screen" id="screenStats"></div>
+      <div class="screen" id="screenProficiencies"></div>
+      <div class="screen" id="screenFeats"></div>
+      <div class="screen" id="screenSpells"></div>
+    </div>
+    <button class="screen-nav left" id="screenLeft">◀</button>
+    <button class="screen-nav right" id="screenRight">▶</button>
+  </div>
+</template>
 </body>
 </html>

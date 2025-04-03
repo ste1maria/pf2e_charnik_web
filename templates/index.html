@@ -2,21 +2,30 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Загрузка персонажа</title>
+  <title>Start page</title>
+  <link rel="stylesheet" href={{ url_for('static', filename='theme.css') }}>
 </head>
 <body>
-  <h1>Загрузить персонажа</h1>
+	<button id="newCharacterBtn">New character</button>
 
-  <form action="/character" method="get">
-    <label for="name">Имя файла (без .json):</label>
-    <input type="text" id="name" name="name" placeholder="mirra" required />
-    <button type="submit">Загрузить</button>
-  </form>
+	<div id="newCharacterModal" class="modal hidden">
+	  <div class="modal-content">
+		<h2>Создание персонажа</h2>
+		<button id="createNewBtn">Создать вручную</button>
+		<input type="file" id="importJsonInput" accept=".json" hidden />
+		<button id="importJsonBtn">Импорт из JSON</button>
+		<button id="closeModalBtn">Отмена</button>
+	  </div>
+	</div>
 
-<br><br>
-<form action="/upload" method="post" enctype="multipart/form-data">
-  <input type="file" name="charfile" accept=".json" required />
-  <button type="submit">Загрузить файл</button>
-</form>
+
+<div id="saved-characters">
+  <h3>Сохранённые персонажи</h3>
+  <ul id="characterList"></ul>
+</div>
+
+<script src="{{ url_for('static', filename='characters.js') }}"></script>
+
+
 </body>
 </html>

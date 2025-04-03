@@ -36,31 +36,38 @@ const newCharacterBtn = document.getElementById("newCharacterBtn");
       renderCharacterList(); // показать список
     });
 
-  importJsonInput.addEventListener("change", (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+importJsonInput.addEventListener("change", async (event) => {
+  const file = event.target.files[0];
+  if (!file) {
+    alert("Файл не выбран");
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append("charfile", file);
+  const formData = new FormData();
+  formData.append("charfile", file);
 
-    fetch("/import_json", {
+  try {
+    const res = await fetch("/import_json", {
       method: "POST",
       body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.error) {
-        alert("Ошибка: " + data.error);
-      } else {
-        console.log("Импортированный персонаж:", data);
-      }
-    })
-    .catch(err => {
-      alert("Ошибка при отправке: " + err.message);
     });
 
-    modal.classList.add("hidden");
-  });
+    const data = await res.json();
+
+    if (data.error) {
+      alert("Ошибка: " + data.error);
+    } else {
+      saveCharacterToLocal(data);
+      renderCharacterList();
+      alert("Персонаж импортирован!");
+    }
+  } catch (err) {
+    alert("Ошибка при отправке: " + err.message);
+  }
+
+  modal.classList.add("hidden");
+});
+
 
 
 function saveCharacterToLocal(character) {

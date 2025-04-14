@@ -1367,3 +1367,8 @@ table {
   padding: 1rem 1rem;
 }
 
+#hpInput {
+  background: var(--light);
+  color: #fff;
+  padding: 0.1rem 0.3rem;
+}

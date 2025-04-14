@@ -23,7 +23,11 @@ document.addEventListener("DOMContentLoaded", () => {
     clone.getElementById("nameRow").textContent = data.name;
     clone.getElementById("levelRow").textContent = "Level: " + data.level;
 
-    clone.getElementById("hpRow").textContent = "HP: " + data.hp;
+    //clone.getElementById("hpRow").textContent = "HP: " + data.hp;
+	clone.getElementById("hpRow").innerHTML = `
+	  HP: <span id="hpDisplay">${data.hp}</span> / <span id="maxHP">${data.hp}</span>
+	`;
+	
 	clone.getElementById("acRow").textContent = "AC: " + data.ac_total["acTotal"];
 
     clone.getElementById("fortitude").innerHTML =
@@ -115,6 +119,44 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
   
+
+  const addHpEditHandler = function() {
+    const hpDisplay = document.getElementById("hpDisplay");
+    if (!hpDisplay) return;
+    hpDisplay.addEventListener("click", function handler() {
+      const currentHP = this.textContent.trim();
+      const input = document.createElement("input");
+      input.type = "number";
+      input.value = currentHP;
+      input.style.width = "4rem";
+      input.style.textAlign = "center";
+      
+      // Меняем span на input:
+      this.parentNode.replaceChild(input, this);
+      input.focus();
+      
+      // Обработка на Enter и blur:
+      input.addEventListener("keydown", function(e) {
+        if (e.key === "Enter") this.blur();
+      });
+      input.addEventListener("blur", function() {
+        const newHP = this.value;
+        const newSpan = document.createElement("span");
+        newSpan.id = "hpDisplay";
+        newSpan.textContent = newHP;
+        
+        // Можно здесь обновить объект персонажа, например, через localStorage
+        this.parentNode.replaceChild(newSpan, this);
+        // Повторно навешиваем обработчик:
+        addHpEditHandler();
+      });
+    });
+  };
+  
+  // Инициализация обработчика после полной загрузки
+
+
+
   const name = getQueryParam("name");
   if (!name) {
     document.getElementById("charSheet").innerHTML = "<p>No parameter 'name'</p>";
@@ -132,5 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
   } else {
     renderCharacter(character);
+	addHpEditHandler();
   }
 });

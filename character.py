@@ -2,17 +2,18 @@ import parsing
 import os
 
 
-def count_modifier(data, attribute):
+def count_modifier(data, attribute, is_decrease=False):
     count = 0
 
     if isinstance(data, dict):
-        for value in data.values():
-            count += count_modifier(value, attribute)
+        for key, value in data.items():
+            is_decrease = (key == "ancestryFlaws")
+            count += count_modifier(value, attribute, is_decrease)
     elif isinstance(data, list):
         for item in data:
-            count += count_modifier(item, attribute)
+            count += count_modifier(item, attribute, is_decrease)
     elif isinstance(data, str) and data.lower() == attribute.lower():
-        count += 1
+        count += 1 if not is_decrease else -1
 
     return count
 
@@ -53,7 +54,7 @@ class Character:
     strength = 0
     dex = 0
     con = 0
-    int = 0
+    intel = 0
     wis = 0
     cha = 0
 
@@ -191,7 +192,7 @@ class Character:
             self.strength = count_modifier(self.stats["breakdown"], "str")
             self.dex = count_modifier(self.stats["breakdown"], "dex")
             self.con = count_modifier(self.stats["breakdown"], "con")
-            self.int = count_modifier(self.stats["breakdown"], "int")
+            self.intel = count_modifier(self.stats["breakdown"], "int")
             self.wis = count_modifier(self.stats["breakdown"], "wis")
             self.cha = count_modifier(self.stats["breakdown"], "cha")
 

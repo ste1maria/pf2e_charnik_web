@@ -1139,7 +1139,7 @@ a.text-dark:hover, a.text-dark:focus {
   position: relative;
   overflow: hidden;
   width: 100vw;
-  height: 60vh;
+  height: 80vh;
 }
 
 .screen-track {
@@ -1150,7 +1150,7 @@ a.text-dark:hover, a.text-dark:focus {
 
 .screen {
   width: 100vw;
-  padding: 3rem 5rem;
+  padding: 0.5rem 0.5rem;
   flex-shrink: 0;
   background: var(--dark);
   box-sizing: border-box;
@@ -1159,23 +1159,19 @@ a.text-dark:hover, a.text-dark:focus {
 .screen-nav {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
   background: var(--dark);
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
-  font-size: 2rem;
-  border-radius: 8px;
   cursor: pointer;
   z-index: 1;
 }
 
 .screen-nav.left {
-  left: 1rem;
+  left: 0.1rem;
 }
 
 .screen-nav.right {
-  right: 1rem;
+  right: 0.1rem;
 }
 
 
@@ -1334,7 +1330,6 @@ td {
 
 table {
   max-width: 100%;
-  min-width: 400px;
   border-collapse: collapse;
 }
 
@@ -1356,7 +1351,7 @@ table {
 
   th,
   td {
-    border: $table-border-width solid $table-border-color;
+    padding: 0.25rem 0.75rem;
   }
 
   thead {

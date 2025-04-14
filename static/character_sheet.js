@@ -55,6 +55,13 @@ document.addEventListener("DOMContentLoaded", () => {
 	clone.getElementById("sizeCell").textContent = data.size;
 	clone.getElementById("speedCell").textContent = data.attributes["speed"];
 	clone.getElementById("dcCell").textContent = data.DC;
+	
+	clone.getElementById("strCell").textContent = (data.strength > 0) ? "+" + data.strength : data.strength;
+	clone.getElementById("conCell").textContent = (data.con > 0) ? "+" + data.con : data.con;
+	clone.getElementById("dexCell").textContent = (data.dex > 0) ? "+" + data.dex : data.dex;
+	clone.getElementById("intCell").textContent = (data.intel > 0) ? "+" + data.intel : data.intel;
+	clone.getElementById("wisCell").textContent = (data.wis > 0) ? "+" + data.wis : data.wis;
+	clone.getElementById("chaCell").textContent = (data.cha > 0) ? "+" + data.cha : data.cha;
     // Вставляем в DOM
     app.innerHTML = "";
     app.appendChild(clone);

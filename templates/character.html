@@ -12,8 +12,8 @@
   </div>
 
   <template id="characterTemplate">
-    <div class="w-100 bg-primary py-3" id="charSheetHeader">
-      <div class="d-flex text-info text-center font-weight-bold" style="width: 100%;">
+    <div class="w-100 character-header py-3" id="charSheetHeader">
+      <div class="d-flex text-info text-center" style="width: 100%;">
         <div class="flex-fill" id="nameLevelPic">
           <div id="nameRow"></div>
           <div id="picRow">
@@ -22,13 +22,13 @@
           <div id="levelRow"></div>
         </div>
 
-        <div class="flex-fill font-weight-bold" id="hpAcShield">
+        <div class="flex-fill" id="hpAcShield">
           <div id="hpRow"></div>
           <div id="acRow"></div>
           <div id="shieldRow"></div>
         </div>
 
-        <div class="flex-fill font-weight-bold" id="savesColumn">
+        <div class="flex-fill" id="savesColumn">
           <div id="fortitude"></div>
           <div id="reflex"></div>
           <div id="will"></div>
@@ -58,13 +58,13 @@
 					</table>
 				</div>
 		</div>
-         <div class="row text-info font-weight-bold row-with-border" id="sizeSpeedRow">
+         <div class="row text-info row-with-border" id="sizeSpeedRow">
 			<div class="table-wrapper w-100">
 				<table class="table text-center mx-auto table-bordered">
 				  <tr>
-					<th class="font-weight-bold text-center">Size</th>
-					<th class="font-weight-bold text-center">Speed </th>
-					<th class="font-weight-bold text-center">DC</th>
+					<th class="font-weight-bold text-center font-weight-bold ">Size</th>
+					<th class="font-weight-bold text-center font-weight-bold ">Speed </th>
+					<th class="font-weight-bold text-center font-weight-bold ">DC</th>
 				  </tr>
 				  <tr>
 					<td id="sizeCell"></td>
@@ -74,16 +74,16 @@
 				</table>
 			</div>
 		 </div>
-		<div class="row text-info font-weight-bold" id="statsRow">
+		<div class="row text-info" id="statsRow">
 			<div class="table-wrapper w-100">
 				<table class="table text-center mx-auto table-bordered">
 				  <tr>
-					<th class="font-weight-bold text-center">Str</th>
-					<th class="font-weight-bold text-center">Con </th>
-					<th class="font-weight-bold text-center">Dex</th>
-					<th class="font-weight-bold text-center">Int</th>
-					<th class="font-weight-bold text-center">Wis </th>
-					<th class="font-weight-bold text-center">Cha</th>
+					<th class="font-weight-bold text-center font-weight-bold ">Str</th>
+					<th class="font-weight-bold text-center font-weight-bold ">Con </th>
+					<th class="font-weight-bold text-center font-weight-bold ">Dex</th>
+					<th class="font-weight-bold text-center font-weight-bold ">Int</th>
+					<th class="font-weight-bold text-center font-weight-bold ">Wis </th>
+					<th class="font-weight-bold text-center font-weight-bold ">Cha</th>
 				  </tr>
 				  <tr>
 					<td id="strCell"></td>
@@ -97,7 +97,75 @@
 			</div>
 		</div>
 	  </div>
-      <div class="screen" id="proficienciesScreen">Proficiencies</div>
+      <div class="screen d-flex justify-content-center " id="proficienciesScreen">
+		<ul class="list-group w-100 text-info" id="listProficiencies">
+			<li class="list-group-item d-flex" id="listItemAcrobatics">
+				<div class="skill-name">Acrobatics</div>
+				<div class="ml-auto skill-modifier" id="modifierAcrobatics">+1</div>
+			</li>
+			<li class="list-group-item d-flex" id="listItemArcana">
+				<div class="skill-name">Arcana</div>
+				<div class="ml-auto skill-modifier" id="modifierArcana">+1</div>
+			</li>
+			<li class="list-group-item d-flex" id="listItemAthletics">
+				<div class="skill-name">Athletics</div>
+				<div class="ml-auto skill-modifier" id="modifierAthletics">+1</div>
+			</li>
+			<li class="list-group-item d-flex" id="listItemCrafting">
+				<div class="skill-name">Crafting</div>
+				<div class="ml-auto skill-modifier" id="modifierCrafting">+1</div>
+			</li>
+			<li class="list-group-item d-flex" id="listItemDeception">
+				<div class="skill-name">Deception</div>
+				<div class="ml-auto skill-modifier" id="modifierDeception">+1</div>
+			</li>
+			<li class="list-group-item d-flex" id="listItemDiplomacy">
+				<div class="skill-name">Diplomacy</div>
+				<div class="ml-auto skill-modifier" id="modifierDiplomacy">+1</div>
+			</li>
+			<li class="list-group-item d-flex" id="listItemIntimidation">
+				<div class="skill-name">Intimidation</div>
+				<div class="ml-auto skill-modifier" id="modifierIntimidation">+1</div>
+			</li>
+			<li class="list-group-item d-flex" id="listItemMedicine">
+				<div class="skill-name">Medicine</div>
+				<div class="ml-auto skill-modifier" id="modifierMedicine">+1</div>
+			</li>
+			<li class="list-group-item d-flex" id="listItemNature">
+				<div class="skill-name">Nature</div>
+				<div class="ml-auto skill-modifier" id="modifierNature">+1</div>
+			</li>
+			<li class="list-group-item d-flex" id="listItemOccultism">
+				<div class="skill-name">Occultism</div>
+				<div class="ml-auto skill-modifier" id="modifierOccultism">+1</div>
+			</li>
+			<li class="list-group-item d-flex" id="listItemPerformance">
+				<div class="skill-name">Performance</div>
+				<div class="ml-auto skill-modifier" id="modifierPerformance">+1</div>
+			</li>
+			<li class="list-group-item d-flex" id="listItemReligion">
+				<div class="skill-name">Religion</div>
+				<div class="ml-auto skill-modifier" id="modifierReligion">+1</div>
+			</li>
+			<li class="list-group-item d-flex" id="listItemSociety">
+				<div class="skill-name">Society</div>
+				<div class="ml-auto skill-modifier" id="modifierSociety">+1</div>
+			</li>
+			<li class="list-group-item d-flex" id="listItemStealth">
+				<div class="skill-name">Stealth</div>
+				<div class="ml-auto skill-modifier" id="modifierStealth">+1</div>
+			</li>
+			<li class="list-group-item d-flex" id="listItemSurvival">
+				<div class="skill-name">Survival</div>
+				<div class="ml-auto skill-modifier" id="modifierSurvival">+1</div>
+			</li>
+			<li class="list-group-item d-flex" id="listItemThievery">
+				<div class="skill-name">Thievery</div>
+				<div class="ml-auto skill-modifier" id="modifierThievery">+1</div>
+			</li>
+			
+		</ul>
+	  </div>
       <div class="screen" id="featsScreen">Feats</div>
       <div class="screen" id="armorWeaponScreen">
           <div id="weaponSection">
@@ -117,9 +185,9 @@
 	</div>
 </template>
 
-<div id="hpModal" class="modal">
+<div id="hpModal" class="modal hidden">
   <div class="modal-content">
-    <span class="close">&times;</span>
+    <span class="close"></span>
     <h2 class="text-info">Edit HP</h2>
     <p class="text-info">Current HP: <span id="modalCurrentHP"></span></p>
     <p>

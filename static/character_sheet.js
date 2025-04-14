@@ -20,65 +20,67 @@ document.addEventListener("DOMContentLoaded", () => {
     const clone = template.content.cloneNode(true);
 
     // Заголовок
-    clone.getElementById("nameRow").textContent = data.name;
-    clone.getElementById("levelRow").textContent = "Level: " + data.level;
+    clone.querySelector("#nameRow").textContent = data.name;
+    clone.querySelector("#levelRow").textContent = "Level: " + data.level;
 
     //clone.getElementById("hpRow").textContent = "HP: " + data.hp;
-	clone.getElementById("hpRow").innerHTML = `
+	clone.querySelector("#hpRow").innerHTML = `
 	  HP: <span id="hpDisplay">${data.hp}</span> / <span id="maxHP">${data.hp}</span>
 	`;
 
-	clone.getElementById("acRow").textContent = "AC: " + data.ac_total["acTotal"];
+	clone.querySelector("#acRow").textContent = "AC: " + data.ac_total["acTotal"];
 
-    clone.getElementById("fortitude").innerHTML =
+    clone.querySelector("#fortitude").innerHTML =
   `<div class="icon-row">
 	<span class="icon-prof ${getProficiencyLevel(data.proficiencies["fortitude"], data.level)}"></span>
 	Fortitude: +${data.proficiencies["fortitude"]}
 	</div>`;
 
-    clone.getElementById("reflex").innerHTML =
+    clone.querySelector("#reflex").innerHTML =
   `<div class="icon-row">
 	<span class="icon-prof ${getProficiencyLevel(data.proficiencies["reflex"], data.level)}"></span>
 	Reflex: +${data.proficiencies["reflex"]}
 	</div>`;
-    clone.getElementById("will").innerHTML =
+    clone.querySelector("#will").innerHTML =
   `<div class="icon-row">
 	<span class="icon-prof ${getProficiencyLevel(data.proficiencies["will"], data.level)}"></span>
 	Will: +${data.proficiencies["will"]}
   </div>`;
-    clone.getElementById("perception").innerHTML =
+    clone.querySelector("#perception").innerHTML =
   `<div class="icon-row">
 		<span class="icon-prof ${getProficiencyLevel(data.proficiencies["perception"], data.level)}"></span>
 		Perception: +${data.proficiencies["perception"]}
 	</div>`;
 
-	clone.getElementById("ancestryCell").textContent = data.ancestry + "\n" + data.heritage;
-	clone.getElementById("backgroundCell").textContent = data.background;
-	clone.getElementById("classCell").textContent = data.char_class;
+	clone.querySelector("#ancestryCell").textContent = data.ancestry + "\n" + data.heritage;
+	clone.querySelector("#backgroundCell").textContent = data.background;
+	clone.querySelector("#classCell").textContent = data.char_class;
 
-	clone.getElementById("sizeCell").textContent = data.size;
-	clone.getElementById("speedCell").textContent = data.attributes["speed"];
-	clone.getElementById("dcCell").textContent = data.DC;
+	clone.querySelector("#sizeCell").textContent = data.size;
+	clone.querySelector("#speedCell").textContent = data.attributes["speed"];
+	clone.querySelector("#dcCell").textContent = data.DC;
 
-	clone.getElementById("strCell").textContent = (data.strength > 0) ? "+" + data.strength : data.strength;
-	clone.getElementById("conCell").textContent = (data.con > 0) ? "+" + data.con : data.con;
-	clone.getElementById("dexCell").textContent = (data.dex > 0) ? "+" + data.dex : data.dex;
-	clone.getElementById("intCell").textContent = (data.intel > 0) ? "+" + data.intel : data.intel;
-	clone.getElementById("wisCell").textContent = (data.wis > 0) ? "+" + data.wis : data.wis;
-	clone.getElementById("chaCell").textContent = (data.cha > 0) ? "+" + data.cha : data.cha;
+	clone.querySelector("#strCell").textContent = (data.strength > 0) ? "+" + data.strength : data.strength;
+	clone.querySelector("#conCell").textContent = (data.con > 0) ? "+" + data.con : data.con;
+	clone.querySelector("#dexCell").textContent = (data.dex > 0) ? "+" + data.dex : data.dex;
+	clone.querySelector("#intCell").textContent = (data.intel > 0) ? "+" + data.intel : data.intel;
+	clone.querySelector("#wisCell").textContent = (data.wis > 0) ? "+" + data.wis : data.wis;
+	clone.querySelector("#chaCell").textContent = (data.cha > 0) ? "+" + data.cha : data.cha;
     // Вставляем в DOM
     app.innerHTML = "";
     app.appendChild(clone);
-
-	let currentScreen = 0;
-	const track = document.getElementById("screenTrack");
-	const left = document.getElementById("screenLeft");
-	const right = document.getElementById("screenRight");
+ }
+ 
 
 	function updateScreen() {
 	  track.style.transform = `translateX(-${currentScreen * 100}vw)`;
 	}
 
+	let currentScreen = 0;
+	const track = document.getElementById("screenTrack");
+	const left = document.getElementById("screenLeft");
+	const right = document.getElementById("screenRight");
+	
 	left.addEventListener("click", () => {
 	  if (currentScreen > 0) {
 		currentScreen--;
@@ -93,12 +95,11 @@ document.addEventListener("DOMContentLoaded", () => {
 	  }
 	});
 
-
     let touchStartX = 0;
     let touchEndX = 0;
 
-  track.addEventListener("touchstart", e => {
-  touchStartX = e.changedTouches[0].screenX;
+	track.addEventListener("touchstart", e => {
+		touchStartX = e.changedTouches[0].screenX;
     });
 
     track.addEventListener("touchend", e => {
@@ -117,8 +118,6 @@ document.addEventListener("DOMContentLoaded", () => {
         updateScreen();
       }
     }
-  }
-
   // Инициализация обработчика после полной загрузки
 
   const name = getQueryParam("name");
@@ -152,6 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Функция для открытия модального окна
   function openHpModal() {
     modal.style.display = "block";
+	modal.classList.remove("hidden");
     // Получаем текущее значение HP из hpDisplay
     const currentHP = parseInt(hpDisplay.textContent, 10);
     modalCurrentHP.textContent = currentHP;

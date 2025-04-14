@@ -5,7 +5,6 @@ from character import Character
 import pf2e_database.fetch_data as db
 import traceback
 
-
 app = Flask(__name__)
 
 @app.route("/")
@@ -24,17 +23,7 @@ def import_character_json():
             tmp_path = tmp.name
 
         char = Character(tmp_path)
-
-        character_data = {
-            "name": char.name,
-            "level": char.level,
-            "class": char.char_class,
-            "hp": char.hp,
-            "background": char.background,
-            "background_description": db.get_background_description(char.background),
-            "class_description": db.get_class_description(char.char_class)
-        }
-
+        character_data = char.to_dict()
         return jsonify(character_data)
 
     except Exception as e:

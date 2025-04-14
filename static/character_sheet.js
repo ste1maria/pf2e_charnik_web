@@ -4,75 +4,90 @@ document.addEventListener("DOMContentLoaded", () => {
     return url.searchParams.get(name);
   }
 
+	function getProficiencyLevel(ability, level) {
+	  if ((ability-level) < 2) return "untrained";
+	  if ((ability-level) >= 2 && (ability-level) < 4) return "trained";
+	  if ((ability-level) >= 4 && (ability-level) < 6) return "expert";
+	  if ((ability-level) >= 6 && (ability-level) < 8) return "master";
+	  if ((ability-level) >= 8) return "legend";
+	  return "untrained";
+	}
+
   function renderCharacter(data) {
-  const app = document.getElementById("charSheet");
-  const template = document.getElementById("characterTemplate");
+    const app = document.getElementById("charSheet");
+    const template = document.getElementById("characterTemplate");
 
-  // Клонируем шаблон и вставляем в страницу
-  app.innerHTML = template.innerHTML;
+    const clone = template.content.cloneNode(true);
 
-  // Заголовок
-  document.getElementById("charName").textContent = data.name;
-  document.getElementById("charClass").textContent = data.class;
-  document.getElementById("charLevel").textContent = data.level;
-  document.getElementById("charHP").textContent = data.hp;
+    // Заголовок
+    clone.getElementById("nameRow").textContent = data.name;
+    clone.getElementById("levelRow").textContent = "Level: " + data.level;
 
-  // Экраны
-  document.getElementById("screenStats").innerHTML = `
-    <h3>Описание</h3>
-    <p>${data.background_description}</p>
-    <p>${data.class_description}</p>
-  `;
+    clone.getElementById("hpRow").textContent = "HP: " + data.hp;
+	clone.getElementById("acRow").textContent = "AC: " + data.ac_total["acTotal"];
 
-  document.getElementById("screenProficiencies").innerHTML = `
-    <h3>Способности</h3>
-    <p>🧠 Coming soon</p>
-  `;
+    clone.getElementById("fortitude").innerHTML =
+  `<div class="icon-row">
+	<span class="icon-prof ${getProficiencyLevel(data.proficiencies["fortitude"], data.level)}"></span>
+	Fortitude: +${data.proficiencies["fortitude"]}
+	</div>`;
 
-  document.getElementById("screenFeats").innerHTML = `
-    <h3>Заклинания</h3>
-    <p>📘 Coming soon</p>
-  `;
+    clone.getElementById("reflex").innerHTML =
+  `<div class="icon-row">
+	<span class="icon-prof ${getProficiencyLevel(data.proficiencies["reflex"], data.level)}"></span>
+	Reflex: +${data.proficiencies["reflex"]}
+	</div>`;
+    clone.getElementById("will").innerHTML =
+  `<div class="icon-row">
+	<span class="icon-prof ${getProficiencyLevel(data.proficiencies["will"], data.level)}"></span>
+	Will: +${data.proficiencies["will"]}
+  </div>`;
+    clone.getElementById("perception").innerHTML =
+  `<div class="icon-row">
+		<span class="icon-prof ${getProficiencyLevel(data.proficiencies["perception"], data.level)}"></span>
+		Perception: +${data.proficiencies["perception"]}
+	</div>`;
 
-  document.getElementById("screenSpells").innerHTML = `
-    <h3>Инвентарь</h3>
-    <p>🎒 Coming soon</p>
-  `;
+	clone.getElementById("ancestryCell").textContent = data.ancestry + "\n" + data.heritage;
+	clone.getElementById("backgroundCell").textContent = data.background;
+	clone.getElementById("classCell").textContent = data.char_class;
+	
+	clone.getElementById("sizeCell").textContent = data.size;
+	clone.getElementById("speedCell").textContent = data.attributes["speed"];
+	clone.getElementById("dcCell").textContent = data.DC;
+    // Вставляем в DOM
+    app.innerHTML = "";
+    app.appendChild(clone);
 
-  // Навигация между экранами
-  let currentScreen = 0;
-  const track = document.getElementById("screenTrack");
-  const left = document.getElementById("screenLeft");
-  const right = document.getElementById("screenRight");
+	let currentScreen = 0;
+	const track = document.getElementById("screenTrack");
+	const left = document.getElementById("screenLeft");
+	const right = document.getElementById("screenRight");
 
-  function updateScreen() {
-        track.style.transform = `translateX(-${currentScreen * 100}vw)`;
+	function updateScreen() {
+	  track.style.transform = `translateX(-${currentScreen * 100}vw)`;
+	}
 
-        const dots = document.querySelectorAll("#screenDots .dot");
-        dots.forEach((dot, index) => {
-            dot.classList.toggle("active", index === currentScreen);
-        });
-    }
+	left.addEventListener("click", () => {
+	  if (currentScreen > 0) {
+		currentScreen--;
+		updateScreen();
+	  }
+	});
 
-    left.addEventListener("click", () => {
-        if (currentScreen > 0) {
-          currentScreen--;
-          updateScreen();
-        }
-    });
-
-    right.addEventListener("click", () => {
-        if (currentScreen < track.children.length - 1) {
-          currentScreen++;
-          updateScreen();
-        }
-    });
+	right.addEventListener("click", () => {
+	  if (currentScreen < track.children.length - 1) {
+		currentScreen++;
+		updateScreen();
+	  }
+	});
+  
 
     let touchStartX = 0;
     let touchEndX = 0;
 
-    track.addEventListener("touchstart", e => {
-      touchStartX = e.changedTouches[0].screenX;
+  track.addEventListener("touchstart", e => {
+  touchStartX = e.changedTouches[0].screenX;
     });
 
     track.addEventListener("touchend", e => {
@@ -91,14 +106,15 @@ document.addEventListener("DOMContentLoaded", () => {
         updateScreen();
       }
     }
-}
-
+  }
+  
   const name = getQueryParam("name");
   if (!name) {
     document.getElementById("charSheet").innerHTML = "<p>No parameter 'name'</p>";
     return;
   }
 
+  
   const characters = JSON.parse(localStorage.getItem("characters") || "[]");
   const character = characters.find(c => c.name === name);
 

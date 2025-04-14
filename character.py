@@ -1,6 +1,22 @@
 import parsing
 import os
 
+
+def count_modifier(data, attribute):
+    count = 0
+
+    if isinstance(data, dict):
+        for value in data.values():
+            count += count_modifier(value, attribute)
+    elif isinstance(data, list):
+        for item in data:
+            count += count_modifier(item, attribute)
+    elif isinstance(data, str) and data.lower() == attribute.lower():
+        count += 1
+
+    return count
+
+
 class Character:
     name = "Unknown adventurer"
     age = "0"
@@ -34,6 +50,13 @@ class Character:
                 "mapLevelledBoosts":{}
             }
     }
+    strength = 0
+    dex = 0
+    con = 0
+    int = 0
+    wis = 0
+    cha = 0
+
     attributes =  {
         "ancestryhp": 0,
         "classhp": 0,
@@ -99,6 +122,7 @@ class Character:
     ac_total =  {}
     pets = []
     familiars = []
+    DC = 0
 
     def __init__(self, jsonfile_path=""):
         base_dir = os.path.dirname(__file__)  # путь к файлу character.py
@@ -108,11 +132,20 @@ class Character:
                 json_data = parsing.parse_character_sheet(json_file)
             self.parse_into_fields(json_data['build'])
 
+    def to_dict(self):
+        return {
+            key: value
+            for key, value in self.__dict__.items()
+            if not key.startswith("_")
+        }
 
     def print_info(self):
         print ("Your character's name is:", self.name + ", they are", self.char_class)
         print ("Their ancestry: ", self.ancestry)
         print ("Con: ", self.stats['con'])
+
+
+
 
 
     def parse_into_fields(self, json_data):
@@ -152,8 +185,18 @@ class Character:
             self.familiars = json_data['familiars']
             self.hp = self.attributes['ancestryhp'] + self.attributes['classhp'] \
                     + self.attributes['bonushp']
+            self.DC = 10 + self.level + self.proficiencies["classDC"] + \
+                      count_modifier(self.stats["breakdown"], self.keyAbility)
+
+            self.strength = count_modifier(self.stats["breakdown"], "str")
+            self.dex = count_modifier(self.stats["breakdown"], "dex")
+            self.con = count_modifier(self.stats["breakdown"], "con")
+            self.int = count_modifier(self.stats["breakdown"], "int")
+            self.wis = count_modifier(self.stats["breakdown"], "wis")
+            self.cha = count_modifier(self.stats["breakdown"], "cha")
 
         except Exception as exc:
+            print("check")
             pass
 
 

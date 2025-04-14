@@ -1101,25 +1101,48 @@ a.text-dark:hover, a.text-dark:focus {
   visibility: hidden !important; }
 
 
+/* Модальное окно (скрыто по умолчанию) */
 .modal {
+  display: none; /* Скрыто по умолчанию */
   position: fixed;
-  top: 0;
+  z-index: 1000;
   left: 0;
+  top: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5); /* полупрозрачный чёрный фон */
 }
 
 .modal-content {
-  background: white;
-  padding: 1rem;
+  background-color: #494949;
+  margin: 15% auto; /* центрирование по горизонтали, 15% от верха */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 400px;
   border-radius: 8px;
-  width: 300px;
+  position: relative;
   text-align: center;
+  
+}
+
+.close {
+  color: #aaa;
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modal-buttons {
+  margin-top: 15px;
+}
+
+.modal-buttons button {
+  margin: 0 10px;
 }
 
 .hidden {
@@ -1270,6 +1293,20 @@ td {
     .btn-light:not(:disabled):not(.disabled):active:focus, .btn-light:not(:disabled):not(.disabled).active:focus,
     .show > .btn-light.dropdown-toggle:focus {
       box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125), 0 0 0 0.2rem rgba(110, 70, 71, 0.5); }
+
+.btn-danger {
+	color: #fff;
+  background-color: #542527;
+  border-color: #542527;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.btn-success {
+	background-color: #3f841d;
+	color:#fff;
+	border-color: #542527;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075);
+}
 
 .d-flex {
   display: flex !important; }

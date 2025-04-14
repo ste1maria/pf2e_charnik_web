@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	clone.getElementById("hpRow").innerHTML = `
 	  HP: <span id="hpDisplay">${data.hp}</span> / <span id="maxHP">${data.hp}</span>
 	`;
-	
+
 	clone.getElementById("acRow").textContent = "AC: " + data.ac_total["acTotal"];
 
     clone.getElementById("fortitude").innerHTML =
@@ -55,11 +55,11 @@ document.addEventListener("DOMContentLoaded", () => {
 	clone.getElementById("ancestryCell").textContent = data.ancestry + "\n" + data.heritage;
 	clone.getElementById("backgroundCell").textContent = data.background;
 	clone.getElementById("classCell").textContent = data.char_class;
-	
+
 	clone.getElementById("sizeCell").textContent = data.size;
 	clone.getElementById("speedCell").textContent = data.attributes["speed"];
 	clone.getElementById("dcCell").textContent = data.DC;
-	
+
 	clone.getElementById("strCell").textContent = (data.strength > 0) ? "+" + data.strength : data.strength;
 	clone.getElementById("conCell").textContent = (data.con > 0) ? "+" + data.con : data.con;
 	clone.getElementById("dexCell").textContent = (data.dex > 0) ? "+" + data.dex : data.dex;
@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		updateScreen();
 	  }
 	});
-  
+
 
     let touchStartX = 0;
     let touchEndX = 0;
@@ -118,52 +118,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   }
-  
 
-  const addHpEditHandler = function() {
-    const hpDisplay = document.getElementById("hpDisplay");
-    if (!hpDisplay) return;
-    hpDisplay.addEventListener("click", function handler() {
-      const currentHP = this.textContent.trim();
-      const input = document.createElement("input");
-      input.type = "number";
-      input.value = currentHP;
-      input.style.width = "4rem";
-      input.style.textAlign = "center";
-      
-      // Меняем span на input:
-      this.parentNode.replaceChild(input, this);
-      input.focus();
-      
-      // Обработка на Enter и blur:
-      input.addEventListener("keydown", function(e) {
-        if (e.key === "Enter") this.blur();
-      });
-      input.addEventListener("blur", function() {
-        const newHP = this.value;
-        const newSpan = document.createElement("span");
-        newSpan.id = "hpDisplay";
-        newSpan.textContent = newHP;
-        
-        // Можно здесь обновить объект персонажа, например, через localStorage
-        this.parentNode.replaceChild(newSpan, this);
-        // Повторно навешиваем обработчик:
-        addHpEditHandler();
-      });
-    });
-  };
-  
   // Инициализация обработчика после полной загрузки
-
-
 
   const name = getQueryParam("name");
   if (!name) {
     document.getElementById("charSheet").innerHTML = "<p>No parameter 'name'</p>";
     return;
   }
-
-  
   const characters = JSON.parse(localStorage.getItem("characters") || "[]");
   const character = characters.find(c => c.name === name);
 
@@ -174,6 +136,69 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
   } else {
     renderCharacter(character);
-	addHpEditHandler();
   }
+  
+  
+  // Элемент, по которому будем кликом открывать модалку (текущий HP)
+  const hpDisplay = document.getElementById("hpDisplay");
+  // Модальное окно и его элементы
+  const modal = document.getElementById("hpModal");
+  const closeModal = document.querySelector("#hpModal .close");
+  const modalCurrentHP = document.getElementById("modalCurrentHP");
+  const hpAdjustmentInput = document.getElementById("hpAdjustment");
+  const subtractButton = document.getElementById("subtractHP");
+  const addButton = document.getElementById("addHP");
+
+  // Функция для открытия модального окна
+  function openHpModal() {
+    modal.style.display = "block";
+    // Получаем текущее значение HP из hpDisplay
+    const currentHP = parseInt(hpDisplay.textContent, 10);
+    modalCurrentHP.textContent = currentHP;
+    hpAdjustmentInput.value = ""; // очистить поле ввода
+  }
+
+  // Открываем модал по клику на hpDisplay
+  hpDisplay.addEventListener("click", openHpModal);
+
+  // Закрытие модала по клику на крестик
+  closeModal.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+
+  // Закрываем модал, если клик вне области модального содержимого
+  window.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      modal.style.display = "none";
+    }
+  });
+
+  // Функция для обновления HP
+  function updateHP(operation) {
+    let adjustment = parseInt(hpAdjustmentInput.value, 10);
+    if (isNaN(adjustment)) {
+      alert("Please enter a valid number");
+      return;
+    }
+    let currentHP = parseInt(hpDisplay.textContent, 10);
+    let newHP;
+    if (operation === "subtract") {
+      newHP = currentHP - adjustment;
+    } else if (operation === "add") {
+      newHP = currentHP + adjustment;
+    }
+    // Обновляем значение HP в отображении и (опционально) в localStorage
+    hpDisplay.textContent = newHP;
+    // Закрываем модальное окно
+    modal.style.display = "none";
+  }
+
+  // Обработчики для кнопок модала
+  subtractButton.addEventListener("click", () => {
+    updateHP("subtract");
+  });
+
+  addButton.addEventListener("click", () => {
+    updateHP("add");
+  });
 });

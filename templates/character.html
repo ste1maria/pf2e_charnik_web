@@ -117,6 +117,21 @@
 	</div>
 </template>
 
+<div id="hpModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2 class="text-info">Edit HP</h2>
+    <p class="text-info">Current HP: <span id="modalCurrentHP"></span></p>
+    <p>
+      <input type="number" id="hpAdjustment" placeholder="Enter value">
+    </p>
+    <div class="modal-buttons">
+      <button id="subtractHP" class="btn btn-danger">Damage</button>
+      <button id="addHP" class="btn btn-success">Heal</button>
+    </div>
+  </div>
+</div>
+
 <script src="{{ url_for('static', filename='character_sheet.js') }}"></script>
 </body>
 </html>

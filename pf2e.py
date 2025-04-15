@@ -1,3 +1,6 @@
+import mimetypes
+mimetypes.add_type('application/javascript', '.js')
+mimetypes.add_type('text/css', '.css')
 from flask import Flask, render_template, request, jsonify
 import tempfile, os, json
 import parsing
@@ -5,7 +8,7 @@ from character import Character
 import pf2e_database.fetch_data as db
 import traceback
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="./templates")
 
 @app.route("/")
 def index():

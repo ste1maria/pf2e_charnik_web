@@ -2,28 +2,45 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Start page</title>
   <link rel="stylesheet" href={{ url_for('static', filename='theme.css') }}>
 </head>
-<body>
-	<button id="newCharacterBtn" class="btn-light">New character</button>
-
+<body class="bg-dark" >
+	 <div class="p-2 border-bottom border-light">
+		<div>
+		  <div class="row">
+			<div class="col-md-12 d-flex flex-row justify-content-end"><a class="btn btn-light" href="#" id="newCharacterBtn">New character</a></div>
+			</div>
+		</div>
+	</div>
+	
 	<div id="newCharacterModal" class="modal hidden">
 	  <div class="modal-content">
-		<h2 class=".text-info">Создание персонажа</h2>
-		<button id="createNewBtn">Создать вручную</button>
+		<h2 class="text-info">New character</h2>
+		<a class="btn btn-light" href="#" id="createNewBtn">Create new</a>
 		<input type="file" id="importJsonInput" accept=".json" hidden />
-		<button id="importJsonBtn">Импорт из JSON</button>
-		<button id="closeModalBtn">Отмена</button>
+		<a class="btn btn-light" href="#" id="importJsonBtn">Import JSON</a>
+		<a class="btn btn-light" href="#" id="closeModalBtn">Cancel</a>
 	  </div>
 	</div>
 
 
-<div id="saved-characters">
-  <h3 class=".text-info">Сохранённые персонажи</h3>
-  <ul id="characterList"></ul>
+<div class="py-1 text-left">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 class="text-info" id="savedCharsHeading">Saved characters</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="py-2" id="saved-characters">
+    <div class="container">
+      <ul id="characterList"></ul>
+    </div>
+  </div>
 </div>
-
-<script src="{{ url_for('static', filename='characters.js') }}"></script>
+<script type="application/x-javascript" src="{{ url_for('static', filename='characters.js') }}"></script>
 </body>
 </html>

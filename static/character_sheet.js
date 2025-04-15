@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
-  function getQueryParam(name) {
-    const url = new URL(window.location.href);
-    return url.searchParams.get(name);
-  }
+	function getQueryParam(name) {
+	const url = new URL(window.location.href);
+	return url.searchParams.get(name);
+	}
 
 	function getProficiencyLevel(ability, level) {
 	  if ((ability-level) < 2) return "untrained";
@@ -13,66 +13,64 @@ document.addEventListener("DOMContentLoaded", () => {
 	  return "untrained";
 	}
 
-  function renderCharacter(data) {
-    const app = document.getElementById("charSheet");
-    const template = document.getElementById("characterTemplate");
+	function renderCharacter(data) {
+		const app = document.getElementById("charSheet");
+		const template = document.getElementById("characterTemplate");
 
-    const clone = template.content.cloneNode(true);
+		const clone = template.content.cloneNode(true);
 
-    // Заголовок
-    clone.querySelector("#nameRow").textContent = data.name;
-    clone.querySelector("#levelRow").textContent = "Level: " + data.level;
+		// Заголовок
+		clone.querySelector("#nameRow").textContent = data.name;
+		clone.querySelector("#levelRow").textContent = "Level: " + data.level;
 
-    //clone.getElementById("hpRow").textContent = "HP: " + data.hp;
-	clone.querySelector("#hpRow").innerHTML = `
-	  HP: <span id="hpDisplay">${data.hp}</span> / <span id="maxHP">${data.hp}</span>
-	`;
+		//clone.getElementById("hpRow").textContent = "HP: " + data.hp;
+		clone.querySelector("#hpRow").innerHTML = `
+		HP: <span id="hpDisplay">${data.hp}</span> / <span id="maxHP">${data.hp}</span>
+		`;
 
-	clone.querySelector("#acRow").textContent = "AC: " + data.ac_total["acTotal"];
+		clone.querySelector("#acRow").textContent = "AC: " + data.ac_total["acTotal"];
 
-    clone.querySelector("#fortitude").innerHTML =
-  `<div class="icon-row">
-	<span class="icon-prof ${getProficiencyLevel(data.proficiencies["fortitude"], data.level)}"></span>
-	Fortitude: +${data.proficiencies["fortitude"]}
-	</div>`;
+		clone.querySelector("#fortitude").innerHTML =
+		`<div class="icon-row">
+		<span class="icon-prof ${getProficiencyLevel(data.proficiencies["fortitude"], data.level)}"></span>
+		Fortitude: +${data.proficiencies["fortitude"]}
+		</div>`;
 
-    clone.querySelector("#reflex").innerHTML =
-  `<div class="icon-row">
-	<span class="icon-prof ${getProficiencyLevel(data.proficiencies["reflex"], data.level)}"></span>
-	Reflex: +${data.proficiencies["reflex"]}
-	</div>`;
-    clone.querySelector("#will").innerHTML =
-  `<div class="icon-row">
-	<span class="icon-prof ${getProficiencyLevel(data.proficiencies["will"], data.level)}"></span>
-	Will: +${data.proficiencies["will"]}
-  </div>`;
-    clone.querySelector("#perception").innerHTML =
-  `<div class="icon-row">
+		clone.querySelector("#reflex").innerHTML =
+		`<div class="icon-row">
+		<span class="icon-prof ${getProficiencyLevel(data.proficiencies["reflex"], data.level)}"></span>
+		Reflex: +${data.proficiencies["reflex"]}
+		</div>`;
+		clone.querySelector("#will").innerHTML =
+		`<div class="icon-row">
+		<span class="icon-prof ${getProficiencyLevel(data.proficiencies["will"], data.level)}"></span>
+		Will: +${data.proficiencies["will"]}
+		</div>`;
+		clone.querySelector("#perception").innerHTML =
+		`<div class="icon-row">
 		<span class="icon-prof ${getProficiencyLevel(data.proficiencies["perception"], data.level)}"></span>
 		Perception: +${data.proficiencies["perception"]}
-	</div>`;
+		</div>`;
 
-	clone.querySelector("#ancestryCell").textContent = data.ancestry + "\n" + data.heritage;
-	clone.querySelector("#backgroundCell").textContent = data.background;
-	clone.querySelector("#classCell").textContent = data.char_class;
+		clone.querySelector("#ancestryCell").textContent = data.ancestry + "\n" + data.heritage;
+		clone.querySelector("#backgroundCell").textContent = data.background;
+		clone.querySelector("#classCell").textContent = data.char_class;
 
-	clone.querySelector("#sizeCell").textContent = data.size;
-	clone.querySelector("#speedCell").textContent = data.attributes["speed"];
-	clone.querySelector("#dcCell").textContent = data.DC;
+		clone.querySelector("#sizeCell").textContent = data.size;
+		clone.querySelector("#speedCell").textContent = data.attributes["speed"];
+		clone.querySelector("#dcCell").textContent = data.DC;
 
-	clone.querySelector("#strCell").textContent = (data.strength > 0) ? "+" + data.strength : data.strength;
-	clone.querySelector("#conCell").textContent = (data.con > 0) ? "+" + data.con : data.con;
-	clone.querySelector("#dexCell").textContent = (data.dex > 0) ? "+" + data.dex : data.dex;
-	clone.querySelector("#intCell").textContent = (data.intel > 0) ? "+" + data.intel : data.intel;
-	clone.querySelector("#wisCell").textContent = (data.wis > 0) ? "+" + data.wis : data.wis;
-	clone.querySelector("#chaCell").textContent = (data.cha > 0) ? "+" + data.cha : data.cha;
-    // Вставляем в DOM
-    app.innerHTML = "";
-    app.appendChild(clone);
- }
- 
-
-	function updateScreen() {
+		clone.querySelector("#strCell").textContent = (data.strength > 0) ? "+" + data.strength : data.strength;
+		clone.querySelector("#conCell").textContent = (data.con > 0) ? "+" + data.con : data.con;
+		clone.querySelector("#dexCell").textContent = (data.dex > 0) ? "+" + data.dex : data.dex;
+		clone.querySelector("#intCell").textContent = (data.intel > 0) ? "+" + data.intel : data.intel;
+		clone.querySelector("#wisCell").textContent = (data.wis > 0) ? "+" + data.wis : data.wis;
+		clone.querySelector("#chaCell").textContent = (data.cha > 0) ? "+" + data.cha : data.cha;
+		// Вставляем в DOM
+		app.innerHTML = "";
+		app.appendChild(clone);
+		
+			function updateScreen() {
 	  track.style.transform = `translateX(-${currentScreen * 100}vw)`;
 	}
 
@@ -118,6 +116,10 @@ document.addEventListener("DOMContentLoaded", () => {
         updateScreen();
       }
     }
+	}
+
+
+
   // Инициализация обработчика после полной загрузки
 
   const name = getQueryParam("name");

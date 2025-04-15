@@ -7,6 +7,7 @@ const newCharacterBtn = document.getElementById("newCharacterBtn");
 
   newCharacterBtn.addEventListener("click", () => {
     modal.classList.remove("hidden");
+	console.info("open modal");
   });
 
   closeModalBtn.addEventListener("click", () => {
@@ -17,7 +18,6 @@ const newCharacterBtn = document.getElementById("newCharacterBtn");
     modal.classList.add("hidden");
     alert("Создание нового персонажа пока не реализовано");
   });
-
   importJsonBtn.addEventListener("click", () => {
     importJsonInput.click();
   });

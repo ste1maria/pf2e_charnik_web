@@ -1192,6 +1192,12 @@ a.text-dark:hover, a.text-dark:focus {
   right: 0.1rem;
 }
 
+@media (max-width: 1000px) {
+  .screen-nav {
+    display: none;
+  }
+}
+
 .icon-row {
   display: flex;
   align-items: center;

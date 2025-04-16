@@ -246,7 +246,6 @@ class Character:
             self.lores = []
             for lore in json_data['lores']:
                 self.lores.append([lore[0], lore[1], self.intel])
-            print(len(self.lores))
 
             self.class_feats = []
             self.heritage_feats = []
@@ -266,7 +265,6 @@ class Character:
                 elif "Ancestry Feat" in feat:
                     self.ancestry_feats.append([feat[0], feat[4]])
 
-            print(self.skill_feats)
             for special_feat in self.specials:
                 if special_feat not in self.special_feats:
                     self.special_feats.append(special_feat)

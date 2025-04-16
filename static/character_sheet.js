@@ -30,20 +30,17 @@ document.addEventListener("DOMContentLoaded", () => {
 		// Заголовок
 		clone.querySelector("#nameRow").textContent = data.name;
 		clone.querySelector("#levelRow").textContent = "Level: " + data.level;
-
-		//clone.getElementById("hpRow").textContent = "HP: " + data.hp;
 		clone.querySelector("#hpRow").innerHTML = `
 		HP: <span id="hpDisplay">${data.hp}</span> / <span id="maxHP">${data.hp}</span>
 		`;
-
 		clone.querySelector("#acRow").textContent = "AC: " + data.ac_total["acTotal"];
 
+		// basic abilities
 		clone.querySelector("#fortitude").innerHTML =
 		`<div class="icon-row">
 		<span class="icon-prof ${getProficiencyLevel(data.proficiencies["fortitude"], data.level)}"> </span>
 		Fortitude: +${data.fortitude}
 		</div>`;
-
 		clone.querySelector("#reflex").innerHTML =
 		`<div class="icon-row">
 		<span class="icon-prof ${getProficiencyLevel(data.proficiencies["reflex"], data.level)}"> </span>
@@ -60,6 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		Perception: +${data.perception}
 		</div>`;
 
+		// character background
 		clone.querySelector("#ancestryCell").textContent = data.ancestry + "\n" + data.heritage;
 		clone.querySelector("#backgroundCell").textContent = data.background;
 		clone.querySelector("#classCell").textContent = data.char_class;
@@ -75,6 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		clone.querySelector("#wisCell").textContent = (data.wis > 0) ? "+" + data.wis : data.wis;
 		clone.querySelector("#chaCell").textContent = (data.cha > 0) ? "+" + data.cha : data.cha;
 		
+		// skills
 		clone.querySelector("#modifierAcrobatics").innerHTML = `
 		+${data.skills["acrobatics"]} <span class="icon-prof ${getSkillProficiency(data.proficiencies["acrobatics"])}"></span>
 		`;
@@ -139,6 +138,50 @@ document.addEventListener("DOMContentLoaded", () => {
 		  listLores.appendChild(newItem);
 		});
 				
+		// feats
+		const featTemplate = clone.querySelector("#featTemplate");
+		const listFeats = clone.querySelector("#listFeats");
+		const listSpecialFeats = clone.querySelector("#listSpecialFeats");
+		
+		data.class_feats.forEach(feat => {
+		  const newItem = featTemplate.content.cloneNode(true);
+		  newItem.querySelector("#featName").textContent = feat[0];
+		  newItem.querySelector("#featType").textContent = feat[1];
+
+		  listFeats.appendChild(newItem);
+		});
+		
+		data.skill_feats.forEach(feat => {
+		  const newItem = featTemplate.content.cloneNode(true);
+		  newItem.querySelector("#featName").textContent = feat[0];
+		  newItem.querySelector("#featType").textContent = feat[1];
+
+		  listFeats.appendChild(newItem);
+		}); 
+		
+		data.heritage_feats.forEach(feat => {
+		  const newItem = featTemplate.content.cloneNode(true);
+		  newItem.querySelector("#featName").textContent = feat[0];
+		  newItem.querySelector("#featType").textContent = feat[1];
+
+		  listFeats.appendChild(newItem);
+		});
+		
+		data.ancestry_feats.forEach(feat => {
+		  const newItem = featTemplate.content.cloneNode(true);
+		  newItem.querySelector("#featName").textContent = feat[0];
+		  newItem.querySelector("#featType").textContent = feat[1];
+
+		  listFeats.appendChild(newItem);
+		});
+		
+		data.special_feats.forEach(feat => {
+		  const newItem = featTemplate.content.cloneNode(true);
+		  newItem.querySelector("#featName").textContent = feat;
+
+		  listSpecialFeats.appendChild(newItem);
+		});
+		
 		// Вставляем в DOM
 		app.innerHTML = "";
 		app.appendChild(clone);

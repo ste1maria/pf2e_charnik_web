@@ -142,10 +142,10 @@ class Character:
 
     mods = {}
     feats = {}
-    class_feats = {}
-    heritage_feats = {}
+    class_feats = []
+    heritage_feats = []
     special_feats = []
-    skill_feats = {}
+    skill_feats = []
     ancestry_feats = []
 
     specials =  []
@@ -240,32 +240,33 @@ class Character:
 
             self.skills = {}
             for skill in skills_attributes.keys():
-                self.skills[skill] = (self.proficiencies[skill] + self.level +
-                                      count_modifier(self.stats["breakdown"], skills_attributes[skill]))
+                self.skills[skill] = (self.proficiencies[skill] + (self.level if self.proficiencies[skill] > 0 else 0)
+                                      + count_modifier(self.stats["breakdown"], skills_attributes[skill]))
 
             self.lores = []
             for lore in json_data['lores']:
                 self.lores.append([lore[0], lore[1], self.intel])
             print(len(self.lores))
 
-            self.class_feats = {}
+            self.class_feats = []
             self.heritage_feats = []
             self.special_feats = []
-            self.skill_feats = {}
+            self.skill_feats = []
             self.ancestry_feats = []
 
             for feat in self.feats:
                 if "Class Feat" in feat:
-                    self.class_feats[feat] = feat[4]
+                    self.class_feats.append([feat[0], feat[4]])
                 elif "Skill Feat" in feat:
-                    self.skill_feats[feat] = feat[4]
+                    self.skill_feats.append([feat[0], feat[4]])
                 elif "Awarded Feat" in feat:
-                    self.special_feats.append(feat)
+                    self.special_feats.append(feat[0])
                 elif "Heritage Feat" in feat:
-                    self.heritage_feats.append(feat)
+                    self.heritage_feats.append([feat[0], feat[4]])
                 elif "Ancestry Feat" in feat:
-                    self.ancestry_feats.append(feat)
+                    self.ancestry_feats.append([feat[0], feat[4]])
 
+            print(self.skill_feats)
             for special_feat in self.specials:
                 if special_feat not in self.special_feats:
                     self.special_feats.append(special_feat)

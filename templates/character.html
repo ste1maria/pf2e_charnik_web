@@ -165,11 +165,7 @@
 			</li>
 		</ul>
 		
-		
-		<!-- ВТОРОЙ СПИСОК — изначально пуст -->
 		<ul class="list-group text-info mb-3" id="listLores"></ul>
-
-		<!-- ШАБЛОН ДЛЯ КЛОНИРОВАНИЯ -->
 		<template id="loreItemTemplate">
 		  <li class="list-group-item d-flex">
 			<div class="lore-name"></div>
@@ -178,9 +174,21 @@
 		</template>
 
 	  </div>
-      <div class="screen" id="featsScreen">
-		<ul class="list-group text-info" id="listFeats">
-		
+      <div class="screen d-flex align-items-center flex-column" id="featsScreen">
+		<ul class="list-group text-info mt-2" id="listFeats">
+			<template id="featTemplate">
+				<li class="list-group-item d-flex flex-column">
+					<div class="text-info" id="featName"></div>
+					<div class="text-info-small" id="featType"></div>
+				</li>
+			</template>
+		</ul>
+		<ul class="list-group text-info" id="listSpecialFeats">
+			<template id="featSpecialTemplate">
+				<li class="list-group-item d-flex">
+					<div class="text-info" id="featName"></div>
+				</li>
+			</template>
 		</ul>
 	  </div>
       <div class="screen" id="armorWeaponScreen">

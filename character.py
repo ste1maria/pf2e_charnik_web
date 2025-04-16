@@ -1,6 +1,24 @@
 import parsing
 import os
 
+skills_attributes = {
+    "acrobatics": 'dex',
+    "arcana": "int",
+    "athletics": "str",
+    "crafting": "int",
+    "deception": "cha",
+    "diplomacy": "cha",
+    "intimidation": "cha",
+    "medicine": "wis",
+    "nature": "wis",
+    "occultism": "int",
+    "performance": "cha",
+    "religion": "wis",
+    "society": "int",
+    "stealth": "dex",
+    "survival": "wis",
+    "thievery": "dex"
+}
 
 def count_modifier(data, attribute, is_decrease=False):
     count = 0
@@ -103,10 +121,35 @@ class Character:
         "thievery": 0
     }
 
+    skills = {
+        "acrobatics": 0,
+        "arcana": 0,
+        "athletics": 0,
+        "crafting": 0,
+        "deception": 0,
+        "diplomacy": 0,
+        "intimidation": 0,
+        "medicine": 0,
+        "nature": 0,
+        "occultism": 0,
+        "performance": 0,
+        "religion": 0,
+        "society": 0,
+        "stealth": 0,
+        "survival": 0,
+        "thievery": 0
+    }
+
     mods = {}
     feats = {}
+    class_feats = {}
+    heritage_feats = {}
+    special_feats = []
+    skill_feats = {}
+    ancestry_feats = []
+
     specials =  []
-    lores = [{}]
+    lores = [[]]
 
     equipment_containers = {}
     equipment = [{}]
@@ -124,6 +167,10 @@ class Character:
     pets = []
     familiars = []
     DC = 0
+    fortitude = 0
+    reflex = 0
+    will = 0
+    perception = 0
 
     def __init__(self, jsonfile_path=""):
         base_dir = os.path.dirname(__file__)  # путь к файлу character.py
@@ -139,15 +186,6 @@ class Character:
             for key, value in self.__dict__.items()
             if not key.startswith("_")
         }
-
-    def print_info(self):
-        print ("Your character's name is:", self.name + ", they are", self.char_class)
-        print ("Their ancestry: ", self.ancestry)
-        print ("Con: ", self.stats['con'])
-
-
-
-
 
     def parse_into_fields(self, json_data):
         try:
@@ -184,8 +222,6 @@ class Character:
             self.ac_total = json_data['acTotal']
             self.pets = json_data['pets']
             self.familiars = json_data['familiars']
-            self.hp = self.attributes['ancestryhp'] + self.attributes['classhp'] \
-                    + self.attributes['bonushp']
             self.DC = 10 + self.level + self.proficiencies["classDC"] + \
                       count_modifier(self.stats["breakdown"], self.keyAbility)
 
@@ -195,6 +231,44 @@ class Character:
             self.intel = count_modifier(self.stats["breakdown"], "int")
             self.wis = count_modifier(self.stats["breakdown"], "wis")
             self.cha = count_modifier(self.stats["breakdown"], "cha")
+            self.fortitude = self.proficiencies["fortitude"] + self.dex + self.level
+            self.will = self.proficiencies["will"] + self.wis + self.level
+            self.reflex = self.proficiencies["reflex"] + self.con + self.level
+            self.perception = self.proficiencies["perception"] + self.wis + self.level
+            self.hp = self.attributes['ancestryhp'] + (self.attributes['classhp'] + self.con) * self.level \
+                    + self.attributes['bonushp']
+
+            self.skills = {}
+            for skill in skills_attributes.keys():
+                self.skills[skill] = (self.proficiencies[skill] + self.level +
+                                      count_modifier(self.stats["breakdown"], skills_attributes[skill]))
+
+            self.lores = []
+            for lore in json_data['lores']:
+                self.lores.append([lore[0], lore[1], self.intel])
+            print(len(self.lores))
+
+            self.class_feats = {}
+            self.heritage_feats = []
+            self.special_feats = []
+            self.skill_feats = {}
+            self.ancestry_feats = []
+
+            for feat in self.feats:
+                if "Class Feat" in feat:
+                    self.class_feats[feat] = feat[4]
+                elif "Skill Feat" in feat:
+                    self.skill_feats[feat] = feat[4]
+                elif "Awarded Feat" in feat:
+                    self.special_feats.append(feat)
+                elif "Heritage Feat" in feat:
+                    self.heritage_feats.append(feat)
+                elif "Ancestry Feat" in feat:
+                    self.ancestry_feats.append(feat)
+
+            for special_feat in self.specials:
+                if special_feat not in self.special_feats:
+                    self.special_feats.append(special_feat)
 
         except Exception as exc:
             print("check")

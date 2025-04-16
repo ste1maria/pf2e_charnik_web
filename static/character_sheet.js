@@ -12,7 +12,15 @@ document.addEventListener("DOMContentLoaded", () => {
 	  if ((ability-level) >= 8) return "legend";
 	  return "untrained";
 	}
-
+		
+	function getSkillProficiency(skill) {
+	  if (skill < 2) return "untrained";
+	  if (skill >= 2 && skill < 4) return "trained";
+	  if (skill >= 4 && skill < 6) return "expert";
+	  if (skill >= 6 && skill < 8) return "master";
+	  if (skill >= 8) return "legend";
+	  return "untrained";
+	}
 	function renderCharacter(data) {
 		const app = document.getElementById("charSheet");
 		const template = document.getElementById("characterTemplate");
@@ -32,24 +40,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		clone.querySelector("#fortitude").innerHTML =
 		`<div class="icon-row">
-		<span class="icon-prof ${getProficiencyLevel(data.proficiencies["fortitude"], data.level)}"></span>
-		Fortitude: +${data.proficiencies["fortitude"]}
+		<span class="icon-prof ${getProficiencyLevel(data.proficiencies["fortitude"], data.level)}"> </span>
+		Fortitude: +${data.fortitude}
 		</div>`;
 
 		clone.querySelector("#reflex").innerHTML =
 		`<div class="icon-row">
-		<span class="icon-prof ${getProficiencyLevel(data.proficiencies["reflex"], data.level)}"></span>
-		Reflex: +${data.proficiencies["reflex"]}
+		<span class="icon-prof ${getProficiencyLevel(data.proficiencies["reflex"], data.level)}"> </span>
+		Reflex: +${data.reflex}
 		</div>`;
 		clone.querySelector("#will").innerHTML =
 		`<div class="icon-row">
-		<span class="icon-prof ${getProficiencyLevel(data.proficiencies["will"], data.level)}"></span>
-		Will: +${data.proficiencies["will"]}
+		<span class="icon-prof ${getProficiencyLevel(data.proficiencies["will"], data.level)}"> </span>
+		Will: +${data.will}
 		</div>`;
 		clone.querySelector("#perception").innerHTML =
 		`<div class="icon-row">
-		<span class="icon-prof ${getProficiencyLevel(data.proficiencies["perception"], data.level)}"></span>
-		Perception: +${data.proficiencies["perception"]}
+		<span class="icon-prof ${getProficiencyLevel(data.proficiencies["perception"], data.level)}"> </span>
+		Perception: +${data.perception}
 		</div>`;
 
 		clone.querySelector("#ancestryCell").textContent = data.ancestry + "\n" + data.heritage;
@@ -66,13 +74,78 @@ document.addEventListener("DOMContentLoaded", () => {
 		clone.querySelector("#intCell").textContent = (data.intel > 0) ? "+" + data.intel : data.intel;
 		clone.querySelector("#wisCell").textContent = (data.wis > 0) ? "+" + data.wis : data.wis;
 		clone.querySelector("#chaCell").textContent = (data.cha > 0) ? "+" + data.cha : data.cha;
+		
+		clone.querySelector("#modifierAcrobatics").innerHTML = `
+		+${data.skills["acrobatics"]} <span class="icon-prof ${getSkillProficiency(data.proficiencies["acrobatics"])}"></span>
+		`;
+		clone.querySelector("#modifierArcana").innerHTML = `
+		+${data.skills["arcana"]} <span class="icon-prof ${getSkillProficiency(data.proficiencies["arcana"])}"></span>
+		`;
+		clone.querySelector("#modifierAthletics").innerHTML = `
+		+${data.skills["athletics"]} <span class="icon-prof ${getSkillProficiency(data.proficiencies["athletics"])}"></span>
+		`;
+		clone.querySelector("#modifierCrafting").innerHTML = `
+		+${data.skills["crafting"]} <span class="icon-prof ${getSkillProficiency(data.proficiencies["crafting"])}"></span>
+		`;
+		clone.querySelector("#modifierDeception").innerHTML = `
+		+${data.skills["deception"]} <span class="icon-prof ${getSkillProficiency(data.proficiencies["deception"])}"></span>
+		`;
+		clone.querySelector("#modifierDiplomacy").innerHTML = `
+		+${data.skills["diplomacy"]} <span class="icon-prof ${getSkillProficiency(data.proficiencies["dimplomacy"])}"></span>
+		`;
+		clone.querySelector("#modifierIntimidation").innerHTML = `
+		+${data.skills["intimidation"]} <span class="icon-prof ${getSkillProficiency(data.proficiencies["intimidation"])}"></span>
+		`;
+		clone.querySelector("#modifierMedicine").innerHTML = `
+		+${data.skills["medicine"]} <span class="icon-prof ${getSkillProficiency(data.proficiencies["medicine"])}"></span>
+		`;
+		clone.querySelector("#modifierNature").innerHTML = `
+		+${data.skills["nature"]} <span class="icon-prof ${getSkillProficiency(data.proficiencies["nature"])}"></span>
+		`;
+		clone.querySelector("#modifierOccultism").innerHTML = `
+		+${data.skills["occultism"]} <span class="icon-prof ${getSkillProficiency(data.proficiencies["occultism"])}"></span>
+		`;
+		clone.querySelector("#modifierPerformance").innerHTML = `
+		+${data.skills["performance"]} <span class="icon-prof ${getSkillProficiency(data.proficiencies["performance"])}"></span>
+		`;
+		clone.querySelector("#modifierReligion").innerHTML = `
+		+${data.skills["religion"]} <span class="icon-prof ${getSkillProficiency(data.proficiencies["religion"])}"></span>
+		`;
+		clone.querySelector("#modifierSociety").innerHTML = `
+		+${data.skills["society"]} <span class="icon-prof ${getSkillProficiency(data.proficiencies["society"])}"></span>
+		`;
+		clone.querySelector("#modifierStealth").innerHTML = `
+		+${data.skills["stealth"]} <span class="icon-prof ${getSkillProficiency(data.proficiencies["stealth"])}"></span>
+		`;
+		clone.querySelector("#modifierSurvival").innerHTML = `
+		+${data.skills["survival"]} <span class="icon-prof ${getSkillProficiency(data.proficiencies["survival"])}"></span>
+		`;
+		clone.querySelector("#modifierThievery").innerHTML = `
+		+${data.skills["thievery"]} <span class="icon-prof ${getSkillProficiency(data.proficiencies["thievery"])}"></span>
+		`;
+		
+		const listLores = clone.querySelector("#listLores");
+		const loreTemplate = clone.querySelector("#loreItemTemplate");
+		
+		data.lores.forEach(lore => {
+		  const newItem = loreTemplate.content.cloneNode(true);
+
+		  newItem.querySelector(".lore-name").textContent = "Lore: " + lore[0];
+		  newItem.querySelector(".skill-modifier").innerHTML = `
+			${(lore[1] + lore[2]) >= 0 ? `+${(lore[1] + lore[2])}` : (lore[1] + lore[2])} 
+			<span class="icon-prof ${getSkillProficiency(lore[1])}"></span>
+			`;
+
+		  listLores.appendChild(newItem);
+		});
+				
 		// Вставляем в DOM
 		app.innerHTML = "";
 		app.appendChild(clone);
 		
 			function updateScreen() {
-	  track.style.transform = `translateX(-${currentScreen * 100}vw)`;
-	}
+		track.style.transform = `translateX(-${currentScreen * 100}vw)`;
+		}
 
 	let currentScreen = 0;
 	const track = document.getElementById("screenTrack");

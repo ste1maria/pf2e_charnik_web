@@ -59,7 +59,6 @@ importJsonInput.addEventListener("change", async (event) => {
     } else {
       saveCharacterToLocal(data);
       renderCharacterList();
-      alert("Персонаж импортирован!");
     }
   } catch (err) {
     alert("Ошибка при отправке: " + err.message);
@@ -113,7 +112,7 @@ function renderCharacterList() {
   saved.forEach((char, index) => {
     const li = document.createElement("li");
     const btn = document.createElement("button");
-    btn.textContent = `${char.name} (уровень ${char.level})`;
+    btn.textContent = `${char.name} (level ${char.level})`;
     btn.classList.add("btn-light");
     btn.addEventListener("click", () => {
     window.location.href = `/character?name=${encodeURIComponent(char.name)}`;

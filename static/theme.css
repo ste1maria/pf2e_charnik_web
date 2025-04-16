@@ -56,7 +56,13 @@ body {
   line-height: 1.5;
   color: #333;
   text-align: left;
-  background-color: var(--dark); }
+  background-color: var(--dark);
+  overflow-x: hidden;
+  overscroll-behavior-x: contain; /* ← браузеры не будут "перетягивать" горизонталь */
+  touch-action: pan-y; /* ← запретить горизонтальный свайп в браузере */
+}
+
+
 
 [tabindex="-1"]:focus {
   outline: 0 !important; }
@@ -542,7 +548,7 @@ button.bg-dark:focus {
 
 .border-light {
   border-color: #542527 !important; }
-  
+
 .border-left {
   border-left: 1px solid #dee2e6 !important; }
 
@@ -1116,7 +1122,7 @@ a.text-dark:hover, a.text-dark:focus {
   border-radius: 8px;
   position: relative;
   text-align: center;
-  
+
 }
 
 .close {
@@ -1151,23 +1157,21 @@ a.text-dark:hover, a.text-dark:focus {
 
 .screen-container {
   position: relative;
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
   width: 100vw;
   height: 80vh;
 }
 
 .screen-track {
   display: flex;
-  transition: transform 0.5s ease;
-  width: 400vw; /* 4 экрана × 100vw */
+  transition: transform 0.3s ease-in-out;
+  will-change: transform;
 }
 
 .screen {
   width: 100vw;
-  padding: 0.5rem 0.5rem;
   flex-shrink: 0;
-  background: var(--dark);
-  box-sizing: border-box;
 }
 
 .screen-nav {
@@ -1290,10 +1294,10 @@ td {
   position: relative;
   width: 100%;
   padding-right: 15px;
-  padding-left: 15px; 
+  padding-left: 15px;
   flex: 0 0 100%;
   max-width: 100%; }
-  
+
  .w-25
  {
      width: 25% !important;
@@ -1303,7 +1307,6 @@ td {
  {
      width: 100% !important };
  }
-
  .no-gutters {
   margin-right: 0;
   margin-left: 0; }
@@ -1341,11 +1344,11 @@ td {
 
 .table-wrapper {
   overflow-x: auto;
-  width: 100%;
+  width: 95%;
 }
 
 table {
-  max-width: 100%;
+  max-width: 95%;
   border-collapse: collapse;
 }
 
@@ -1393,8 +1396,18 @@ table {
   display: flex;
   flex-direction: column;
   padding-left: 0;
-  margin-bottom: 0; }
+  width: 95vw;
+}
 
+.mb-3
+{
+  margin-bottom: 2rem;
+}
+
+.mt-2
+{
+	margin-top: 2rem;
+}
 .list-group-item-action {
   width: 100%;
   color: #ccc;
@@ -1407,14 +1420,14 @@ table {
   .list-group-item-action:active {
     color: #ccc;
     background-color: #e9ecef; }
-	
+
 .list-group-item {
   position: relative;
   display: block;
   padding: 0.25rem 0.25rem;
   margin-bottom: -1px;
   background-color: #353535;
-  border: 1px solid rgba(49, 49, 49, 0.125); 
+  border: 1px solid rgba(49, 49, 49, 0.125);
   border-color: #494949;
 }
   .list-group-item:first-child {
@@ -1433,8 +1446,8 @@ table {
     color: #ccc;
     var(--dark);
     border-color: #12bbad; }
-	
-	
+
+
 .badge {
   display: inline-block;
   padding: 0.25em 0.4em;
@@ -1454,16 +1467,16 @@ table {
     text-decoration: none; }
   .badge:empty {
     display: none; }
-	
+
 .ml-auto,
 .mx-auto {
   margin-left: auto !important; }
- 
- .skill-name {
+
+ .skill-name, .lore-name {
 	font-size: 1rem;
 	padding: 0.4rem 0.4rem;
  }
- 
+
  .skill-modifier {
 	font-size: 1rem;
 	padding: 0.4rem 0.4rem;
@@ -1471,4 +1484,3 @@ table {
 
 .p-2 {
   padding: 0.75rem !important; }
- 

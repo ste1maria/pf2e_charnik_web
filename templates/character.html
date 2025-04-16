@@ -37,6 +37,8 @@
       </div>
     </div>
 
+
+
   <div class="screen-container">
     <div class="screen-track" id="screenTrack">
       <div class="screen justify-content-center" id="statsScreen">
@@ -95,94 +97,113 @@
 			</div>
 		</div>
 	  </div>
-      <div class="screen d-flex justify-content-center " id="proficienciesScreen">
-		<ul class="list-group w-100 text-info" id="listProficiencies">
-			<li class="list-group-item d-flex" id="listItemAcrobatics">
+      <div class="screen d-flex align-items-center flex-column" id="proficienciesScreen">
+		<ul class="list-group text-info mt-2" id="listProficiencies">
+			<li class="list-group-item d-flex " id="listItemAcrobatics">
 				<div class="skill-name">Acrobatics</div>
-				<div class="ml-auto skill-modifier" id="modifierAcrobatics">+1</div>
+				<div class="ml-auto skill-modifier" id="modifierAcrobatics"></div>
 			</li>
 			<li class="list-group-item d-flex" id="listItemArcana">
 				<div class="skill-name">Arcana</div>
-				<div class="ml-auto skill-modifier" id="modifierArcana">+1</div>
+				<div class="ml-auto skill-modifier" id="modifierArcana"></div>
 			</li>
 			<li class="list-group-item d-flex" id="listItemAthletics">
 				<div class="skill-name">Athletics</div>
-				<div class="ml-auto skill-modifier" id="modifierAthletics">+1</div>
+				<div class="ml-auto skill-modifier" id="modifierAthletics"></div>
 			</li>
 			<li class="list-group-item d-flex" id="listItemCrafting">
 				<div class="skill-name">Crafting</div>
-				<div class="ml-auto skill-modifier" id="modifierCrafting">+1</div>
+				<div class="ml-auto skill-modifier" id="modifierCrafting"></div>
 			</li>
 			<li class="list-group-item d-flex" id="listItemDeception">
 				<div class="skill-name">Deception</div>
-				<div class="ml-auto skill-modifier" id="modifierDeception">+1</div>
+				<div class="ml-auto skill-modifier" id="modifierDeception"></div>
 			</li>
 			<li class="list-group-item d-flex" id="listItemDiplomacy">
 				<div class="skill-name">Diplomacy</div>
-				<div class="ml-auto skill-modifier" id="modifierDiplomacy">+1</div>
+				<div class="ml-auto skill-modifier" id="modifierDiplomacy"></div>
 			</li>
 			<li class="list-group-item d-flex" id="listItemIntimidation">
 				<div class="skill-name">Intimidation</div>
-				<div class="ml-auto skill-modifier" id="modifierIntimidation">+1</div>
+				<div class="ml-auto skill-modifier" id="modifierIntimidation"></div>
 			</li>
 			<li class="list-group-item d-flex" id="listItemMedicine">
 				<div class="skill-name">Medicine</div>
-				<div class="ml-auto skill-modifier" id="modifierMedicine">+1</div>
+				<div class="ml-auto skill-modifier" id="modifierMedicine"></div>
 			</li>
 			<li class="list-group-item d-flex" id="listItemNature">
 				<div class="skill-name">Nature</div>
-				<div class="ml-auto skill-modifier" id="modifierNature">+1</div>
+				<div class="ml-auto skill-modifier" id="modifierNature"></div>
 			</li>
 			<li class="list-group-item d-flex" id="listItemOccultism">
 				<div class="skill-name">Occultism</div>
-				<div class="ml-auto skill-modifier" id="modifierOccultism">+1</div>
+				<div class="ml-auto skill-modifier" id="modifierOccultism"></div>
 			</li>
 			<li class="list-group-item d-flex" id="listItemPerformance">
 				<div class="skill-name">Performance</div>
-				<div class="ml-auto skill-modifier" id="modifierPerformance">+1</div>
+				<div class="ml-auto skill-modifier" id="modifierPerformance"></div>
 			</li>
 			<li class="list-group-item d-flex" id="listItemReligion">
 				<div class="skill-name">Religion</div>
-				<div class="ml-auto skill-modifier" id="modifierReligion">+1</div>
+				<div class="ml-auto skill-modifier" id="modifierReligion"></div>
 			</li>
 			<li class="list-group-item d-flex" id="listItemSociety">
 				<div class="skill-name">Society</div>
-				<div class="ml-auto skill-modifier" id="modifierSociety">+1</div>
+				<div class="ml-auto skill-modifier" id="modifierSociety"></div>
 			</li>
 			<li class="list-group-item d-flex" id="listItemStealth">
 				<div class="skill-name">Stealth</div>
-				<div class="ml-auto skill-modifier" id="modifierStealth">+1</div>
+				<div class="ml-auto skill-modifier" id="modifierStealth"></div>
 			</li>
 			<li class="list-group-item d-flex" id="listItemSurvival">
 				<div class="skill-name">Survival</div>
-				<div class="ml-auto skill-modifier" id="modifierSurvival">+1</div>
+				<div class="ml-auto skill-modifier" id="modifierSurvival"></div>
 			</li>
 			<li class="list-group-item d-flex" id="listItemThievery">
 				<div class="skill-name">Thievery</div>
-				<div class="ml-auto skill-modifier" id="modifierThievery">+1</div>
+				<div class="ml-auto skill-modifier" id="modifierThievery"></div>
 			</li>
-			
+		</ul>
+		
+		
+		<!-- ВТОРОЙ СПИСОК — изначально пуст -->
+		<ul class="list-group text-info mb-3" id="listLores"></ul>
+
+		<!-- ШАБЛОН ДЛЯ КЛОНИРОВАНИЯ -->
+		<template id="loreItemTemplate">
+		  <li class="list-group-item d-flex">
+			<div class="lore-name"></div>
+			<div class="ml-auto skill-modifier"></div>
+		  </li>
+		</template>
+
+	  </div>
+      <div class="screen" id="featsScreen">
+		<ul class="list-group text-info" id="listFeats">
+		
 		</ul>
 	  </div>
-      <div class="screen" id="featsScreen">Feats</div>
       <div class="screen" id="armorWeaponScreen">
           <div id="weaponSection">
+
           </div>
           <div id="armorSection">
 
           </div>
+
       </div>
       <div class="screen" id="spellsScreen">Spells</div>
       <div class="screen" id="inventoryScreen">Inventory</div>
     </div>
-    <button class="screen-nav left" id="screenLeft">..</button>
-    <button class="screen-nav right" id="screenRight">..</button>
+    <button class="screen-nav left" id="screenLeft">◀</button>
+    <button class="screen-nav right" id="screenRight">▶</button>
   </div>
+	</div>
 </template>
 
 <div id="hpModal" class="modal hidden">
   <div class="modal-content">
-    <span class="close"></span>
+    <span class="close">&times;</span>
     <h2 class="text-info">Edit HP</h2>
     <p class="text-info">Current HP: <span id="modalCurrentHP"></span></p>
     <p>

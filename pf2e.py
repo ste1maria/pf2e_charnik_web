@@ -27,6 +27,7 @@ def import_character_json():
 
         char = Character(tmp_path)
         character_data = char.to_dict()
+        print(character_data)
         return jsonify(character_data)
 
     except Exception as e:

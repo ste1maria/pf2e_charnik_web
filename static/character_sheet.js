@@ -319,4 +319,36 @@ document.addEventListener("DOMContentLoaded", () => {
   addButton.addEventListener("click", () => {
     updateHP("add");
   });
+  
+  function openFeatModal(featName) {
+	  const featModal = document.getElementById("featInfoModal");
+	  const featModalText = document.getElementById("featModalText");
+		
+	  featModal.classList.remove("hidden");
+	  featModalText.textContent = "Loading feat description...";
+
+	  fetch(`/get_description?feat_name=${encodeURIComponent(featName)}`)
+		.then(res => res.json())
+		.then(data => {
+		  featModalText.textContent = data.description || "Description not found.";
+		})
+		.catch(() => {
+		  featModalText.textContent = "Error while loading the description.";
+		});
+	}
+
+    document.getElementById("listFeats").addEventListener("click", (e) => {
+	  const li = e.target.closest("li.list-group-item");
+	  if (!li) return;
+
+	  const featNameEl = li.querySelector(".feat-name");
+	  if (!featNameEl) return;
+
+	  const featName = featNameEl.textContent.trim();
+	  openFeatModal(featName);
+	});
+	
+	document.querySelector("#featInfoModal .close").addEventListener("click", () => {
+	  document.getElementById("featInfoModal").classList.add("hidden");
+	});
 });

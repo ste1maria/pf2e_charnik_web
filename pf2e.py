@@ -1,14 +1,16 @@
 import mimetypes
 mimetypes.add_type('application/javascript', '.js')
 mimetypes.add_type('text/css', '.css')
-from flask import Flask, render_template, request, jsonify
+
+from flask import Flask, render_template, request, jsonify, session
 import tempfile, os, json
-import parsing
+import pickle
 from character import Character
-import pf2e_database.fetch_data as db
 import traceback
+import secrets
 
 app = Flask(__name__, template_folder="./templates")
+app.secret_key = secrets.token_hex(16)
 
 @app.route("/")
 def index():
@@ -26,8 +28,9 @@ def import_character_json():
             tmp_path = tmp.name
 
         char = Character(tmp_path)
+        session["char"] = pickle.dumps(char)
         character_data = char.to_dict()
-        print(character_data)
+
         return jsonify(character_data)
 
     except Exception as e:
@@ -42,6 +45,16 @@ def import_character_json():
 @app.route("/character")
 def character_page():
     return render_template("character.html")
+
+@app.route("/get_description")
+def get_description():
+    if "char" not in session:
+        return jsonify({"description": "Персонаж не загружен"}), 400
+
+    char = pickle.loads(session["char"])
+    feat_name = request.args.get("feat_name")
+    return jsonify({"description": char.get_feat_description(feat_name)})
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=5050)  # Running on http://localhost:5050

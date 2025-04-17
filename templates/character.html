@@ -178,8 +178,8 @@
 		<ul class="list-group text-info mt-2" id="listFeats">
 			<template id="featTemplate">
 				<li class="list-group-item d-flex flex-column">
-					<div class="text-info" id="featName"></div>
-					<div class="text-info-small" id="featType"></div>
+					<div class="text-info feat-name" id="featName"></div>
+					<div class="text-info-small feat-type" id="featType"></div>
 				</li>
 			</template>
 		</ul>
@@ -221,6 +221,13 @@
       <button id="subtractHP" class="btn btn-danger">Damage</button>
       <button id="addHP" class="btn btn-success">Heal</button>
     </div>
+  </div>
+</div>
+
+<div id="featInfoModal" class="modal hidden">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <div id="featModalText">Loading description...</div>
   </div>
 </div>
 

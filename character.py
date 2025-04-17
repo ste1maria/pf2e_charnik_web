@@ -1,5 +1,6 @@
 import parsing
 import os
+import pf2e_database.fetch_data as db
 
 skills_attributes = {
     "acrobatics": 'dex',
@@ -273,4 +274,17 @@ class Character:
             print("check")
             pass
 
+    def get_feat_description(self, feat_name):
+        feat_type = ""
+        if any(feat_name == feat[0] for feat in self.class_feats):
+            feat_type = "class"
+        elif any(feat_name == feat[0] for feat in self.ancestry_feats):
+            feat_type = "ancestry"
+        elif any(feat_name == feat[0] for feat in self.skill_feats):
+            feat_type = "skill"
+        elif any(feat_name == feat[0] for feat in self.special_feats):
+            feat_type = "class"
+        else:
+            return ""
 
+        return db.get_feat_description(feat_name, feat_type)

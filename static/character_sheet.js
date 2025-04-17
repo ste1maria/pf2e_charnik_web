@@ -320,17 +320,19 @@ document.addEventListener("DOMContentLoaded", () => {
     updateHP("add");
   });
   
+  
+const featModal = document.getElementById("featInfoModal");
+const featModalText = document.getElementById("featModalText");
+	  
   function openFeatModal(featName) {
-	  const featModal = document.getElementById("featInfoModal");
-	  const featModalText = document.getElementById("featModalText");
-		
+		featModal.style.display = "block";
 	  featModal.classList.remove("hidden");
 	  featModalText.textContent = "Loading feat description...";
 
 	  fetch(`/get_description?feat_name=${encodeURIComponent(featName)}`)
 		.then(res => res.json())
 		.then(data => {
-		  featModalText.textContent = data.description || "Description not found.";
+		  featModalText.innerHTML = data.description || `Description not found.`;
 		})
 		.catch(() => {
 		  featModalText.textContent = "Error while loading the description.";
@@ -348,7 +350,24 @@ document.addEventListener("DOMContentLoaded", () => {
 	  openFeatModal(featName);
 	});
 	
-	document.querySelector("#featInfoModal .close").addEventListener("click", () => {
-	  document.getElementById("featInfoModal").classList.add("hidden");
+	document.getElementById("listSpecialFeats").addEventListener("click", (e) => {
+	  const li = e.target.closest("li.list-group-item");
+	  if (!li) return;
+
+	  const featNameEl = li.querySelector(".feat-name");
+	  if (!featNameEl) return;
+
+	  const featName = featNameEl.textContent.trim();
+	  openFeatModal(featName);
 	});
+	
+	document.querySelector("#featInfoModal .close").addEventListener("click", () => {
+	  featModal.classList.add("hidden");
+	});
+	
+	window.addEventListener("click", (event) => {
+		if (event.target === featModal) {
+		  featModal.style.display = "none";
+		}
+  });
 });

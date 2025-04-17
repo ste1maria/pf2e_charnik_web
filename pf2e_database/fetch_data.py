@@ -1,11 +1,15 @@
 import json
+import os
 
-backgrounds_json = "pf2e_database/data/backgrounds.json"
-classes_json = "pf2e_database/data/classes.json"
-class_feats_json = "pf2e_database/data/class-feats.json"
-ancestry_feats_json = "pf2e_database/data/ancestry-feats.json"
-skill_feats_json = "pf2e_database/data/skill-feats.json"
-special_feats_json = "pf2e_database/data/special-feats.json"
+base_dir = os.path.dirname(__file__)
+
+backgrounds_json = os.path.join(base_dir, "data", "backgrounds.json")
+classes_json =  os.path.join(base_dir, "data", "classes.json")
+
+class_feats_json =  os.path.join(base_dir, "data", "class-feats.json")
+ancestry_feats_json =  os.path.join(base_dir, "data", "ancestry-feats.json")
+skill_feats_json =  os.path.join(base_dir, "data", "skill-feats.json")
+special_feats_json = os.path.join(base_dir, "data", "special-feats.json")
 
 def get_background_description(background):
     with open(backgrounds_json, 'r') as bg:

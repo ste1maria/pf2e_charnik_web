@@ -37,9 +37,12 @@ def get_feat_description(feat_name, feat_type):
 
     try:
         print(feat_name, feat_type, json_source)
-        with open(json_source) as feat_file:
+        with (open(json_source) as feat_file):
             feats_info = json.load(feat_file)
-            return feats_info[feat_name]['description']['value']
+            return [feats_info[feat_name]['description']['value'],\
+                    feats_info[feat_name]['actionType']['value'],\
+                    feats_info[feat_name]['actions']['value']]
 
     except Exception as exc:
         print("Error while reading database: ", str(exc))
+

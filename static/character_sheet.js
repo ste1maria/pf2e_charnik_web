@@ -14,25 +14,6 @@
 	const url = new URL(window.location.href);
 	return url.searchParams.get(name);
 	}
-
-	function getProficiencyLevel(ability, level) {
-	  if ((ability-level) < 2) return "untrained";
-	  if ((ability-level) >= 2 && (ability-level) < 4) return "trained";
-	  if ((ability-level) >= 4 && (ability-level) < 6) return "expert";
-	  if ((ability-level) >= 6 && (ability-level) < 8) return "master";
-	  if ((ability-level) >= 8) return "legend";
-	  return "untrained";
-	}
-		
-	function getSkillProficiency(skill) {
-	  if (skill < 2) return "untrained";
-	  if (skill >= 2 && skill < 4) return "trained";
-	  if (skill >= 4 && skill < 6) return "expert";
-	  if (skill >= 6 && skill < 8) return "master";
-	  if (skill >= 8) return "legend";
-	  return "untrained";
-	}
-	
 	
 	const template = document.getElementById("characterTemplate");
 	const app = document.getElementById("charSheet");
@@ -159,42 +140,68 @@
 		const listSpecialFeats = clone.querySelector("#listSpecialFeats");
 		
 		data.class_feats.forEach(feat => {
-		  const newItem = featTemplate.content.cloneNode(true);
-		  newItem.querySelector("#featName").textContent = feat[0];
-		  newItem.querySelector("#featType").textContent = feat[1];
-
-		  listFeats.appendChild(newItem);
+		  fetch(`/get_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
+			.then(res => res.json())
+			.then(data => {
+				printFeatWithIcon(feat, data.actionType, data.actions);
+			})
+			.catch(err => {
+			  console.error("Ошибка при получении фита:", feat[0], err);
+			});
 		});
 		
 		data.skill_feats.forEach(feat => {
-		  const newItem = featTemplate.content.cloneNode(true);
-		  newItem.querySelector("#featName").textContent = feat[0];
-		  newItem.querySelector("#featType").textContent = feat[1];
-
-		  listFeats.appendChild(newItem);
+		  fetch(`/get_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
+			.then(res => res.json())
+			.then(data => {
+				printFeatWithIcon(feat, data.actionType, data.actions);
+			})
+			.catch(err => {
+			  console.error("Ошибка при получении фита:", feat[0], err);
+			});
 		}); 
 		
 		data.heritage_feats.forEach(feat => {
-		  const newItem = featTemplate.content.cloneNode(true);
-		  newItem.querySelector("#featName").textContent = feat[0];
-		  newItem.querySelector("#featType").textContent = feat[1];
-
-		  listFeats.appendChild(newItem);
+		  fetch(`/get_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
+			.then(res => res.json())
+			.then(data => {
+				printFeatWithIcon(feat, data.actionType, data.actions);
+			})
+			.catch(err => {
+			  console.error("Ошибка при получении фита:", feat[0], err);
+			});
 		});
 		
 		data.ancestry_feats.forEach(feat => {
-		  const newItem = featTemplate.content.cloneNode(true);
-		  newItem.querySelector("#featName").textContent = feat[0];
-		  newItem.querySelector("#featType").textContent = feat[1];
-
-		  listFeats.appendChild(newItem);
+		  fetch(`/get_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
+			.then(res => res.json())
+			.then(data => {
+				printFeatWithIcon(feat, data.actionType, data.actions);
+			})
+			.catch(err => {
+			  console.error("Ошибка при получении фита:", feat[0], err);
+			});
 		});
 		
 		data.special_feats.forEach(feat => {
 		  const newItem = featTemplate.content.cloneNode(true);
-		  newItem.querySelector("#featName").textContent = feat;
 
-		  listSpecialFeats.appendChild(newItem);
+		  fetch(`/get_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
+			.then(res => res.json())
+			.then(data => {
+				console.log(data);
+				console.log(feat);
+			  const actionIcon = getActionIcon(data.actionType, data.actions);
+
+			  newItem.querySelector("#featName").innerHTML = `
+				${feat}   <img src="/static/icons/actions/${actionIcon}" class="img-fluid" style="max-width: 18px; background: transparent;">
+			  `;
+
+			  listSpecialFeats.appendChild(newItem);
+			})
+			.catch(err => {
+			  console.error("Ошибка при получении фита:", feat[0], err);
+			});
 		});
 		
 		// Вставляем в DOM
@@ -262,71 +269,11 @@
 		  });
 		}
 
-		
 		// Элемент, по которому будем кликом открывать модалку (текущий HP)
 		const hpDisplay = app.querySelector("#hpDisplay");
-		// Модальное окно и его элементы
-		const modal = document.getElementById("hpModal");
-		const closeModal = document.querySelector("#hpModal .close");
-		const modalCurrentHP = document.getElementById("modalCurrentHP");
-		const hpAdjustmentInput = document.getElementById("hpAdjustment");
-		const subtractButton = document.getElementById("subtractHP");
-		const addButton = document.getElementById("addHP");
-
-		// Функция для открытия модального окна
-		function openHpModal() {
-			modal.style.display = "block";
-			modal.classList.remove("hidden");
-			// Получаем текущее значение HP из hpDisplay
-			const currentHP = parseInt(hpDisplay.textContent, 10);
-			modalCurrentHP.textContent = currentHP;
-			hpAdjustmentInput.value = ""; // очистить поле ввода
-		}
-
 		// Открываем модал по клику на hpDisplay
 		hpDisplay.addEventListener("click", openHpModal);
 
-		// Закрытие модала по клику на крестик
-		closeModal.addEventListener("click", () => {
-			modal.style.display = "none";
-		});
-
-		// Закрываем модал, если клик вне области модального содержимого
-		window.addEventListener("click", (event) => {
-			if (event.target === modal) {
-				modal.style.display = "none";
-			}
-		});
-
-		// Функция для обновления HP
-		function updateHP(operation) {
-			let adjustment = parseInt(hpAdjustmentInput.value, 10);
-			if (isNaN(adjustment)) {
-				alert("Please enter a valid number");
-				return;
-			}
-			let currentHP = parseInt(hpDisplay.textContent, 10);
-			let newHP;
-			if (operation === "subtract") {
-				newHP = currentHP - adjustment;
-			} else if (operation === "add") {
-				newHP = currentHP + adjustment;
-			}
-			// Обновляем значение HP в отображении и (опционально) в localStorage
-			hpDisplay.textContent = newHP;
-			// Закрываем модальное окно
-			modal.style.display = "none";
-		}
-
-		// Обработчики для кнопок модала
-		subtractButton.addEventListener("click", () => {
-			updateHP("subtract");
-		});
-
-		addButton.addEventListener("click", () => {
-			updateHP("add");
-		});		
-		
 		app.querySelector("#listFeats").addEventListener("click", (e) => {
 			const li = e.target.closest("li.list-group-item");
 			if (!li) return;
@@ -359,10 +306,60 @@
 	});
 	
 		
+	const modal = document.getElementById("hpModal");
+	const closeModal = document.querySelector("#hpModal .close");
+	const modalCurrentHP = document.getElementById("modalCurrentHP");
+	const hpAdjustmentInput = document.getElementById("hpAdjustment");
+	const subtractButton = document.getElementById("subtractHP");
+	const addButton = document.getElementById("addHP");
 
-  
+	function openHpModal() {
+		modal.style.display = "block";
+		modal.classList.remove("hidden");
+		// Получаем текущее значение HP из hpDisplay
+		const currentHP = parseInt(hpDisplay.textContent, 10);
+		modalCurrentHP.textContent = currentHP;
+		hpAdjustmentInput.value = ""; // очистить поле ввода
+	}
 
-	  
+	closeModal.addEventListener("click", () => {
+		modal.style.display = "none";
+	});
+
+	window.addEventListener("click", (event) => {
+		if (event.target === modal) {
+			modal.style.display = "none";
+		}
+	});
+
+	function updateHP(operation) {
+		let adjustment = parseInt(hpAdjustmentInput.value, 10);
+		if (isNaN(adjustment)) {
+			alert("Please enter a valid number");
+			return;
+		}
+		let currentHP = parseInt(hpDisplay.textContent, 10);
+		let newHP;
+		if (operation === "subtract") {
+			newHP = currentHP - adjustment;
+		} else if (operation === "add") {
+			newHP = currentHP + adjustment;
+		}
+		hpDisplay.textContent = newHP;
+		// Закрываем модальное окно
+		modal.style.display = "none";
+	}
+
+	// Обработчики для кнопок модала
+	subtractButton.addEventListener("click", () => {
+		updateHP("subtract");
+	});
+
+	addButton.addEventListener("click", () => {
+		updateHP("add");
+	});		
+		
+	const closeFeatModal = document.querySelector("#featInfoModal .close");
 	const featModal = document.getElementById("featInfoModal");
 	const featModalText = document.getElementById("featModalText");
 		  
@@ -377,4 +374,50 @@
 		  featModal.style.display = "none";
 		}
 	});
-	 
+	closeFeatModal.addEventListener("click", () => {
+		featModal.style.display = "none";
+	});
+
+	function getProficiencyLevel(ability, level) {
+	  if ((ability-level) < 2) return "untrained";
+	  if ((ability-level) >= 2 && (ability-level) < 4) return "trained";
+	  if ((ability-level) >= 4 && (ability-level) < 6) return "expert";
+	  if ((ability-level) >= 6 && (ability-level) < 8) return "master";
+	  if ((ability-level) >= 8) return "legend";
+	  return "untrained";
+	}
+		
+	function getSkillProficiency(skill) {
+	  if (skill < 2) return "untrained";
+	  if (skill >= 2 && skill < 4) return "trained";
+	  if (skill >= 4 && skill < 6) return "expert";
+	  if (skill >= 6 && skill < 8) return "master";
+	  if (skill >= 8) return "legend";
+	  return "untrained";
+	}
+	
+	function getActionIcon(actionType, actions)
+	{
+		if (actions === null) {
+			if (actionType === "reaction") return "Reaction.webp";
+			if (actionType === "passive") return "Empty.webp";
+			if (actionType === "free") return "FreeAction.webp";
+		}
+		if (actions === 1) return "OneAction.webp";
+		if (actions === 2) return "TwoActions.webp";
+		if (actions === 3) return "ThreeActions.webp";
+		return "Empty.webp"
+	}
+	
+	function printFeatWithIcon(feat, actionType, actions)
+	{
+		const newItem = featTemplate.content.cloneNode(true);
+		const actionIcon = getActionIcon(actionType, actions);
+		console.log(feat);
+		  newItem.querySelector("#featName").innerHTML = `
+			${feat[0]}   <img src="/static/icons/actions/${actionIcon}" class="img-fluid" style="max-width: 20px; background: transparent;">
+		  `;
+		  newItem.querySelector("#featType").textContent = feat[1];
+
+		  listFeats.appendChild(newItem);
+	}

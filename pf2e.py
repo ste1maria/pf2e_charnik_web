@@ -90,9 +90,17 @@ def get_description():
         return jsonify({"description": "Персонаж не найден"}), 404
 
     char = Character(char_path)
-    description = char.get_feat_description(feat_name)
 
-    return jsonify({"description": description})
+
+    return_value = jsonify({"description":"N/A", "actionType":"N/A", "actions":"N/A"})
+    try:
+        description, action_type, actions = char.get_feat_description(feat_name)
+        return_value = jsonify({"description": description, "actionType": action_type, "actions": actions})
+        return return_value
+    except Exception as exc:
+        print("Error while getting description: ", exc)
+
+    return jsonify({"description":"N/A", "actionType":"N/A", "actions":"N/A"})
 
 
 if __name__ == "__main__":

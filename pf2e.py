@@ -2,15 +2,26 @@ import mimetypes
 mimetypes.add_type('application/javascript', '.js')
 mimetypes.add_type('text/css', '.css')
 
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify
 import tempfile, os, json
-import pickle
 from character import Character
 import traceback
-import secrets
+import random, string
 
 app = Flask(__name__, template_folder="./templates")
-app.secret_key = secrets.token_hex(16)
+
+CHAR_DIR = os.path.join(os.path.dirname(__file__), "characters")
+
+def generate_char_id(name, char_dir):
+    base = name.lower().replace(" ", "_")  # заменим пробелы, уберём регистр
+
+    while True:
+        suffix = ''.join(random.choices(string.ascii_lowercase + string.digits, k=6))
+        char_id = f"{base}-{suffix}"
+        path = os.path.join(char_dir, f"{char_id}.json")
+        if not os.path.exists(path):
+            return char_id
+
 
 @app.route("/")
 def index():
@@ -28,10 +39,14 @@ def import_character_json():
             tmp_path = tmp.name
 
         char = Character(tmp_path)
-        session["char"] = pickle.dumps(char)
-        character_data = char.to_dict()
 
-        return jsonify(character_data)
+        char_id = char_id = generate_char_id(char.name, CHAR_DIR)
+        save_path = os.path.join(CHAR_DIR, f"{char_id}.json")
+
+        with open(save_path, "w", encoding="utf-8") as f:
+            json.dump(char.to_dict(), f)
+
+        return jsonify({"char_id": char_id})
 
     except Exception as e:
         traceback.print_exc()
@@ -42,18 +57,42 @@ def import_character_json():
             os.unlink(tmp_path)
 
 
+@app.route("/get_character")
+def get_character():
+    char_id = request.args.get("char_id")
+    if not char_id:
+        return jsonify({"error": "char_id не указан"}), 400
+
+    char_path = os.path.join(CHAR_DIR, f"{char_id}.json")
+    if not os.path.exists(char_path):
+        return jsonify({"error": "Персонаж не найден"}), 404
+
+    with open(char_path, "r", encoding="utf-8") as f:
+        char_data = json.load(f)
+
+    return jsonify(char_data)
+
+
 @app.route("/character")
 def character_page():
     return render_template("character.html")
 
 @app.route("/get_description")
 def get_description():
-    if "char" not in session:
-        return jsonify({"description": "Персонаж не загружен"}), 400
-
-    char = pickle.loads(session["char"])
+    char_id = request.args.get("char_id")
     feat_name = request.args.get("feat_name")
-    return jsonify({"description": char.get_feat_description(feat_name)})
+
+    if not char_id or not feat_name:
+        return jsonify({"description": "Недостаточно параметров"}), 400
+
+    char_path = os.path.join(CHAR_DIR, f"{char_id}.json")
+    if not os.path.exists(char_path):
+        return jsonify({"description": "Персонаж не найден"}), 404
+
+    char = Character(char_path)
+    description = char.get_feat_description(feat_name)
+
+    return jsonify({"description": description})
 
 
 if __name__ == "__main__":

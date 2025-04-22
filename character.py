@@ -179,7 +179,10 @@ class Character:
         if full_path!="":
             with open(full_path, 'r') as json_file:
                 json_data = parsing.parse_character_sheet(json_file)
-            self.parse_into_fields(json_data['build'])
+
+            self.raw_data = json_data
+            self.build = json_data['build']
+            self.parse_into_fields(self.build)
 
     def to_dict(self):
         return {
@@ -187,6 +190,13 @@ class Character:
             for key, value in self.__dict__.items()
             if not key.startswith("_")
         }
+
+    @classmethod
+    def from_dict(cls, data):
+        char = cls.__new__(cls)
+        char.__dict__.update(data)
+        char.parse_into_fields(char.build)  # можно из raw_data["build"]
+        return char
 
     def parse_into_fields(self, json_data):
         try:
@@ -276,7 +286,6 @@ class Character:
 
     def get_feat_description(self, feat_name):
         feat_type = ""
-        print(feat_name)
         if any(feat_name == feat[0] for feat in self.class_feats):
             feat_type = "class"
         elif any(feat_name == feat[0] for feat in self.ancestry_feats):

@@ -23,7 +23,9 @@
         </div>
 
         <div class="flex-fill" id="hpAcShield">
-          <div id="hpRow"></div>
+          <div id="hpRow">
+			HP: <span id="hpDisplay"></span> / <span id="maxHP"></span>
+		 </div>
           <div id="acRow"></div>
           <div id="shieldRow"></div>
         </div>
@@ -203,10 +205,8 @@
       <div class="screen" id="spellsScreen">Spells</div>
       <div class="screen" id="inventoryScreen">Inventory</div>
     </div>
-    <button class="screen-nav left" id="screenLeft">◀</button>
-    <button class="screen-nav right" id="screenRight">▶</button>
   </div>
-	</div>
+  <div id="screenDots" class="dots"></div>
 </template>
 
 <div id="hpModal" class="modal hidden">

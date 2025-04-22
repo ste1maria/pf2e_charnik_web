@@ -11,6 +11,7 @@ ancestry_feats_json =  os.path.join(base_dir, "data", "ancestry-feats.json")
 skill_feats_json =  os.path.join(base_dir, "data", "skill-feats.json")
 special_feats_json = os.path.join(base_dir, "data", "special-feats.json")
 
+
 def get_background_description(background):
     with open(backgrounds_json, 'r') as bg:
         bg_data = json.load(bg)

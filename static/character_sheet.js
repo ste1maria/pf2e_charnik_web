@@ -1,4 +1,15 @@
-document.addEventListener("DOMContentLoaded", () => {
+
+	// Получаем char_id из URL
+	const params = new URLSearchParams(window.location.search);
+	const characterId = params.get("char_id");
+	
+	let currentHp = 0;
+	fetch(`/get_character?char_id=${characterId}`)
+	  .then(res => res.json())
+	  .then(data => {
+		renderCharacter(data);
+	  });
+
 	function getQueryParam(name) {
 	const url = new URL(window.location.href);
 	return url.searchParams.get(name);
@@ -21,18 +32,38 @@ document.addEventListener("DOMContentLoaded", () => {
 	  if (skill >= 8) return "legend";
 	  return "untrained";
 	}
-	function renderCharacter(data) {
-		const app = document.getElementById("charSheet");
-		const template = document.getElementById("characterTemplate");
+	
+	
+	const template = document.getElementById("characterTemplate");
+	const app = document.getElementById("charSheet");
+	
+	let currentScreen = 0;
+	
+    let touchStartX = 0;
+    let touchEndX = 0;
 
+    function handleSwipe() {
+      const diff = touchEndX - touchStartX;
+      if (Math.abs(diff) > 50) {
+        if (diff < 0 && currentScreen < track.children.length - 1) {
+          currentScreen++;
+        } else if (diff > 0 && currentScreen > 0) {
+          currentScreen--;
+        }
+        updateScreen();
+      }
+    }
+	
+	function renderCharacter(data) {
 		const clone = template.content.cloneNode(true);
 
 		// Заголовок
+		currentHp = data.hp;
+		
 		clone.querySelector("#nameRow").textContent = data.name;
 		clone.querySelector("#levelRow").textContent = "Level: " + data.level;
-		clone.querySelector("#hpRow").innerHTML = `
-		HP: <span id="hpDisplay">${data.hp}</span> / <span id="maxHP">${data.hp}</span>
-		`;
+		clone.querySelector("#hpDisplay").innerHTML = `${currentHp}`;
+		clone.querySelector("#maxHP").innerHTML=`${data.hp}`;
 		clone.querySelector("#acRow").textContent = "AC: " + data.ac_total["acTotal"];
 
 		// basic abilities
@@ -186,188 +217,161 @@ document.addEventListener("DOMContentLoaded", () => {
 		app.innerHTML = "";
 		app.appendChild(clone);
 		
-			function updateScreen() {
-		track.style.transform = `translateX(-${currentScreen * 100}vw)`;
+		 const event = new CustomEvent("characterRendered");
+		app.dispatchEvent(event);
+	}
+
+	app.addEventListener("characterRendered", () => {
+		const track = app.querySelector("#screenTrack");
+		const screens  = app.querySelectorAll(".screen");
+		const dotsContainer = app.querySelector("#screenDots");
+		
+			// Генерация точек
+		screens.forEach((_, index) => {
+		  const dot = document.createElement("div");
+		  dot.classList.add("dot");
+		  if (index === 0) dot.classList.add("active");
+
+		  dot.addEventListener("click", () => {
+			currentScreen = index;
+			updateScreen(track, dotsContainer);
+		  });
+
+		  dotsContainer.appendChild(dot);
+		});
+		
+		track.addEventListener("touchstart", e => {
+			touchStartX = e.changedTouches[0].screenX;
+		});
+
+		track.addEventListener("touchend", e => {
+		  touchEndX = e.changedTouches[0].screenX;
+		  handleSwipe();
+		});
+
+		
+		function updateScreen(track, dotsContainer) {
+		  track.style.transform = `translateX(-${currentScreen * 100}vw)`;
+		  updateDots(dotsContainer);
 		}
 
-	let currentScreen = 0;
-	const track = document.getElementById("screenTrack");
-	const left = document.getElementById("screenLeft");
-	const right = document.getElementById("screenRight");
-	
-	left.addEventListener("click", () => {
-	  if (currentScreen > 0) {
-		currentScreen--;
-		updateScreen();
-	  }
-	});
+		function updateDots(dotsContainer) {
+		   dotsContainer.querySelectorAll(".dot").forEach((dot, index) => {
+			dot.classList.toggle("active", index === currentScreen);
+		  });
+		}
 
-	right.addEventListener("click", () => {
-	  if (currentScreen < track.children.length - 1) {
-		currentScreen++;
-		updateScreen();
-	  }
-	});
+		
+		// Элемент, по которому будем кликом открывать модалку (текущий HP)
+		const hpDisplay = app.querySelector("#hpDisplay");
+		// Модальное окно и его элементы
+		const modal = document.getElementById("hpModal");
+		const closeModal = document.querySelector("#hpModal .close");
+		const modalCurrentHP = document.getElementById("modalCurrentHP");
+		const hpAdjustmentInput = document.getElementById("hpAdjustment");
+		const subtractButton = document.getElementById("subtractHP");
+		const addButton = document.getElementById("addHP");
 
-    let touchStartX = 0;
-    let touchEndX = 0;
+		// Функция для открытия модального окна
+		function openHpModal() {
+			modal.style.display = "block";
+			modal.classList.remove("hidden");
+			// Получаем текущее значение HP из hpDisplay
+			const currentHP = parseInt(hpDisplay.textContent, 10);
+			modalCurrentHP.textContent = currentHP;
+			hpAdjustmentInput.value = ""; // очистить поле ввода
+		}
 
-	track.addEventListener("touchstart", e => {
-		touchStartX = e.changedTouches[0].screenX;
-    });
+		// Открываем модал по клику на hpDisplay
+		hpDisplay.addEventListener("click", openHpModal);
 
-    track.addEventListener("touchend", e => {
-      touchEndX = e.changedTouches[0].screenX;
-      handleSwipe();
-    });
-
-    function handleSwipe() {
-      const diff = touchEndX - touchStartX;
-      if (Math.abs(diff) > 50) {
-        if (diff < 0 && currentScreen < track.children.length - 1) {
-          currentScreen++;
-        } else if (diff > 0 && currentScreen > 0) {
-          currentScreen--;
-        }
-        updateScreen();
-      }
-    }
-	}
-
-
-
-  // Инициализация обработчика после полной загрузки
-
-  const name = getQueryParam("name");
-  if (!name) {
-    document.getElementById("charSheet").innerHTML = "<p>No parameter 'name'</p>";
-    return;
-  }
-  const characters = JSON.parse(localStorage.getItem("characters") || "[]");
-  const character = characters.find(c => c.name === name);
-
-  if (!character) {
-    document.getElementById("charSheet").innerHTML = `
-      <p>Персонаж "${name}" не найден.</p>
-      <p>В наличии: ${characters.map(c => c.name).join(", ")}</p>
-    `;
-  } else {
-    renderCharacter(character);
-  }
-  
-  
-  // Элемент, по которому будем кликом открывать модалку (текущий HP)
-  const hpDisplay = document.getElementById("hpDisplay");
-  // Модальное окно и его элементы
-  const modal = document.getElementById("hpModal");
-  const closeModal = document.querySelector("#hpModal .close");
-  const modalCurrentHP = document.getElementById("modalCurrentHP");
-  const hpAdjustmentInput = document.getElementById("hpAdjustment");
-  const subtractButton = document.getElementById("subtractHP");
-  const addButton = document.getElementById("addHP");
-
-  // Функция для открытия модального окна
-  function openHpModal() {
-    modal.style.display = "block";
-	modal.classList.remove("hidden");
-    // Получаем текущее значение HP из hpDisplay
-    const currentHP = parseInt(hpDisplay.textContent, 10);
-    modalCurrentHP.textContent = currentHP;
-    hpAdjustmentInput.value = ""; // очистить поле ввода
-  }
-
-  // Открываем модал по клику на hpDisplay
-  hpDisplay.addEventListener("click", openHpModal);
-
-  // Закрытие модала по клику на крестик
-  closeModal.addEventListener("click", () => {
-    modal.style.display = "none";
-  });
-
-  // Закрываем модал, если клик вне области модального содержимого
-  window.addEventListener("click", (event) => {
-    if (event.target === modal) {
-      modal.style.display = "none";
-    }
-  });
-
-  // Функция для обновления HP
-  function updateHP(operation) {
-    let adjustment = parseInt(hpAdjustmentInput.value, 10);
-    if (isNaN(adjustment)) {
-      alert("Please enter a valid number");
-      return;
-    }
-    let currentHP = parseInt(hpDisplay.textContent, 10);
-    let newHP;
-    if (operation === "subtract") {
-      newHP = currentHP - adjustment;
-    } else if (operation === "add") {
-      newHP = currentHP + adjustment;
-    }
-    // Обновляем значение HP в отображении и (опционально) в localStorage
-    hpDisplay.textContent = newHP;
-    // Закрываем модальное окно
-    modal.style.display = "none";
-  }
-
-  // Обработчики для кнопок модала
-  subtractButton.addEventListener("click", () => {
-    updateHP("subtract");
-  });
-
-  addButton.addEventListener("click", () => {
-    updateHP("add");
-  });
-  
-  
-const featModal = document.getElementById("featInfoModal");
-const featModalText = document.getElementById("featModalText");
-	  
-  function openFeatModal(featName) {
-		featModal.style.display = "block";
-	  featModal.classList.remove("hidden");
-	  featModalText.textContent = "Loading feat description...";
-
-	  fetch(`/get_description?feat_name=${encodeURIComponent(featName)}`)
-		.then(res => res.json())
-		.then(data => {
-		  featModalText.innerHTML = data.description || `Description not found.`;
-		})
-		.catch(() => {
-		  featModalText.textContent = "Error while loading the description.";
+		// Закрытие модала по клику на крестик
+		closeModal.addEventListener("click", () => {
+			modal.style.display = "none";
 		});
+
+		// Закрываем модал, если клик вне области модального содержимого
+		window.addEventListener("click", (event) => {
+			if (event.target === modal) {
+				modal.style.display = "none";
+			}
+		});
+
+		// Функция для обновления HP
+		function updateHP(operation) {
+			let adjustment = parseInt(hpAdjustmentInput.value, 10);
+			if (isNaN(adjustment)) {
+				alert("Please enter a valid number");
+				return;
+			}
+			let currentHP = parseInt(hpDisplay.textContent, 10);
+			let newHP;
+			if (operation === "subtract") {
+				newHP = currentHP - adjustment;
+			} else if (operation === "add") {
+				newHP = currentHP + adjustment;
+			}
+			// Обновляем значение HP в отображении и (опционально) в localStorage
+			hpDisplay.textContent = newHP;
+			// Закрываем модальное окно
+			modal.style.display = "none";
+		}
+
+		// Обработчики для кнопок модала
+		subtractButton.addEventListener("click", () => {
+			updateHP("subtract");
+		});
+
+		addButton.addEventListener("click", () => {
+			updateHP("add");
+		});		
+		
+		app.querySelector("#listFeats").addEventListener("click", (e) => {
+			const li = e.target.closest("li.list-group-item");
+			if (!li) return;
+
+			const featNameEl = li.querySelector(".feat-name");
+			if (!featNameEl) return;
+
+			const featName = featNameEl.textContent.trim();
+			fetch(`/get_description?char_id=${characterId}&feat_name=${encodeURIComponent(featName)}`)
+				.then(res => res.json())
+				.then(data => {
+					openFeatModal(data.description);
+			});
+		});
+	
+		app.querySelector("#listSpecialFeats").addEventListener("click", (e) => {
+			const li = e.target.closest("li.list-group-item");
+			if (!li) return;
+
+			const featNameEl = li.querySelector(".feat-name");
+			if (!featNameEl) return;
+
+			const featName = featNameEl.textContent.trim();
+			fetch(`/get_description?char_id=${characterId}&feat_name=${encodeURIComponent(featName)}`)
+				.then(res => res.json())
+				.then(data => {
+					openFeatModal(data.description);
+			});
+		});
+	});
+  
+  
+
+	  
+	const featModal = document.getElementById("featInfoModal");
+	const featModalText = document.getElementById("featModalText");
+		  
+	function openFeatModal(featDescription) {
+		featModal.style.display = "block";
+		featModal.classList.remove("hidden");
+		featModalText.innerHTML = `${featDescription}`;
 	}
-
-    document.getElementById("listFeats").addEventListener("click", (e) => {
-	  const li = e.target.closest("li.list-group-item");
-	  if (!li) return;
-
-	  const featNameEl = li.querySelector(".feat-name");
-	  if (!featNameEl) return;
-
-	  const featName = featNameEl.textContent.trim();
-	  openFeatModal(featName);
-	});
-	
-	document.getElementById("listSpecialFeats").addEventListener("click", (e) => {
-	  const li = e.target.closest("li.list-group-item");
-	  if (!li) return;
-
-	  const featNameEl = li.querySelector(".feat-name");
-	  if (!featNameEl) return;
-
-	  const featName = featNameEl.textContent.trim();
-	  openFeatModal(featName);
-	});
-	
-	document.querySelector("#featInfoModal .close").addEventListener("click", () => {
-	  featModal.classList.add("hidden");
-	});
 	
 	window.addEventListener("click", (event) => {
 		if (event.target === featModal) {
 		  featModal.style.display = "none";
 		}
-  });
-});
+	});
+	 

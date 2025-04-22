@@ -48,18 +48,31 @@ importJsonInput.addEventListener("change", async (event) => {
 
   try {
     const res = await fetch("/import_json", {
-      method: "POST",
-      body: formData
-    });
+	  method: "POST",
+	  body: formData
+	});
 
-    const data = await res.json();
+	const result = await res.json();
 
-    if (data.error) {
-      alert("Ошибка: " + data.error);
-    } else {
-      saveCharacterToLocal(data);
-      renderCharacterList();
-    }
+	if (result.error) {
+	  alert("Ошибка: " + result.error);
+	} else {
+	  const charId = result.char_id;
+
+	  // Загружаем данные персонажа отдельно
+	  const charRes = await fetch(`/get_character?char_id=${charId}`);
+	  const character = await charRes.json();
+
+	  if (character.error) {
+		alert("Ошибка загрузки персонажа");
+		return;
+	  }
+
+	  character.char_id = charId; // приклеим ID
+
+	  saveCharacterToLocal(character);
+	  renderCharacterList();
+	}
   } catch (err) {
     alert("Ошибка при отправке: " + err.message);
   }
@@ -109,16 +122,36 @@ function renderCharacterList() {
     return;
   }
 
-  saved.forEach((char, index) => {
+  saved.forEach((char) => {
     const li = document.createElement("li");
     const btn = document.createElement("button");
     btn.textContent = `${char.name} (level ${char.level})`;
     btn.classList.add("btn-light");
+
     btn.addEventListener("click", () => {
-    window.location.href = `/character?name=${encodeURIComponent(char.name)}`;
+      window.location.href = `/character?char_id=${char.char_id}`;
     });
 
     li.appendChild(btn);
     list.appendChild(li);
   });
 }
+
+function saveCharacterToLocal(character) {
+  const saved = JSON.parse(localStorage.getItem("characters") || "[]");
+
+  // если такой char_id уже есть — не дублируем
+  if (!saved.some(c => c.char_id === character.char_id)) {
+    saved.push({
+      char_id: character.char_id,
+      name: character.name,
+      level: character.level
+    });
+
+    localStorage.setItem("characters", JSON.stringify(saved));
+  }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  renderCharacterList();
+});

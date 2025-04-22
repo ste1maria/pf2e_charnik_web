@@ -36,23 +36,7 @@
 	
 	const template = document.getElementById("characterTemplate");
 	const app = document.getElementById("charSheet");
-	
-	let currentScreen = 0;
-	
-    let touchStartX = 0;
-    let touchEndX = 0;
 
-    function handleSwipe() {
-      const diff = touchEndX - touchStartX;
-      if (Math.abs(diff) > 50) {
-        if (diff < 0 && currentScreen < track.children.length - 1) {
-          currentScreen++;
-        } else if (diff > 0 && currentScreen > 0) {
-          currentScreen--;
-        }
-        updateScreen();
-      }
-    }
 	
 	function renderCharacter(data) {
 		const clone = template.content.cloneNode(true);
@@ -226,6 +210,11 @@
 		const screens  = app.querySelectorAll(".screen");
 		const dotsContainer = app.querySelector("#screenDots");
 		
+		let currentScreen = 0;
+	
+		let touchStartX = 0;
+		let touchEndX = 0;
+
 			// Генерация точек
 		screens.forEach((_, index) => {
 		  const dot = document.createElement("div");
@@ -234,7 +223,7 @@
 
 		  dot.addEventListener("click", () => {
 			currentScreen = index;
-			updateScreen(track, dotsContainer);
+			updateScreen();
 		  });
 
 		  dotsContainer.appendChild(dot);
@@ -242,6 +231,7 @@
 		
 		track.addEventListener("touchstart", e => {
 			touchStartX = e.changedTouches[0].screenX;
+			console.log("swipe start");
 		});
 
 		track.addEventListener("touchend", e => {
@@ -249,8 +239,19 @@
 		  handleSwipe();
 		});
 
+		function handleSwipe() {
+		  const diff = touchEndX - touchStartX;
+		  if (Math.abs(diff) > 50) {
+			if (diff < 0 && currentScreen < track.children.length - 1) {
+			  currentScreen++;
+			} else if (diff > 0 && currentScreen > 0) {
+			  currentScreen--;
+			}
+			updateScreen();
+		  }
+		}
 		
-		function updateScreen(track, dotsContainer) {
+		function updateScreen() {
 		  track.style.transform = `translateX(-${currentScreen * 100}vw)`;
 		  updateDots(dotsContainer);
 		}
@@ -356,7 +357,9 @@
 			});
 		});
 	});
-  
+	
+		
+
   
 
 	  

@@ -91,7 +91,6 @@ def get_description():
 
     char = Character(char_path)
 
-
     return_value = jsonify({"description":"N/A", "actionType":"N/A", "actions":"N/A"})
     try:
         description, action_type, actions = char.get_feat_description(feat_name)

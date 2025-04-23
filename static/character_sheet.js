@@ -18,7 +18,6 @@
 	const template = document.getElementById("characterTemplate");
 	const app = document.getElementById("charSheet");
 
-	
 	function renderCharacter(data) {
 		const clone = template.content.cloneNode(true);
 
@@ -62,6 +61,7 @@
 		clone.querySelector("#speedCell").textContent = data.attributes["speed"];
 		clone.querySelector("#dcCell").textContent = data.DC;
 
+		// Stats
 		clone.querySelector("#strCell").textContent = (data.strength > 0) ? "+" + data.strength : data.strength;
 		clone.querySelector("#conCell").textContent = (data.con > 0) ? "+" + data.con : data.con;
 		clone.querySelector("#dexCell").textContent = (data.dex > 0) ? "+" + data.dex : data.dex;
@@ -143,7 +143,7 @@
 		  fetch(`/get_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
 			.then(res => res.json())
 			.then(data => {
-				printFeatWithIcon(feat, data.actionType, data.actions);
+				listFeats.appendChild(printFeatWithIcon(featTemplate, feat, data.actionType, data.actions));
 			})
 			.catch(err => {
 			  console.error("Ошибка при получении фита:", feat[0], err);
@@ -154,7 +154,7 @@
 		  fetch(`/get_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
 			.then(res => res.json())
 			.then(data => {
-				printFeatWithIcon(feat, data.actionType, data.actions);
+				listFeats.appendChild(printFeatWithIcon(featTemplate, feat, data.actionType, data.actions));
 			})
 			.catch(err => {
 			  console.error("Ошибка при получении фита:", feat[0], err);
@@ -165,7 +165,7 @@
 		  fetch(`/get_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
 			.then(res => res.json())
 			.then(data => {
-				printFeatWithIcon(feat, data.actionType, data.actions);
+				listFeats.appendChild(printFeatWithIcon(featTemplate, feat, data.actionType, data.actions));
 			})
 			.catch(err => {
 			  console.error("Ошибка при получении фита:", feat[0], err);
@@ -176,7 +176,7 @@
 		  fetch(`/get_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
 			.then(res => res.json())
 			.then(data => {
-				printFeatWithIcon(feat, data.actionType, data.actions);
+				listFeats.appendChild(printFeatWithIcon(featTemplate, feat, data.actionType, data.actions));
 			})
 			.catch(err => {
 			  console.error("Ошибка при получении фита:", feat[0], err);
@@ -194,7 +194,8 @@
 			  const actionIcon = getActionIcon(data.actionType, data.actions);
 
 			  newItem.querySelector("#featName").innerHTML = `
-				${feat}   <img src="/static/icons/actions/${actionIcon}" class="img-fluid" style="max-width: 18px; background: transparent;">
+				${feat}   <img src="/static/icons/actions/${actionIcon}" class="img-fluid" 
+				style="max-width: 18px; background: transparent;">
 			  `;
 
 			  listSpecialFeats.appendChild(newItem);
@@ -204,6 +205,28 @@
 			});
 		});
 		
+		// Weapons
+		const weaponTemplate = clone.querySelector("#weaponTemplate");
+		const listWeapons = clone.querySelector("#weaponSection");
+
+		data.weapons.forEach(weapon => {
+			const newWeaponEntry = weaponTemplate.content.cloneNode(true);
+		
+			newWeaponEntry.querySelector("#weaponName").innerHTML = `
+				${weapon.name} <span class="icon-prof ${getSkillProficiency(data.proficiencies[weapon.prof])}">
+				</span>			
+			`;
+
+			newWeaponEntry.querySelector("#weaponDamage").innerHTML = `
+				Damage: ${weapon.die} + ${weapon.damageBonus}; ${weapon.damageType}
+			`;
+			newWeaponEntry.querySelector("#weaponAttackRoll").innerHTML = `
+				Hit: +${weapon.attack}
+			`;
+
+			listWeapons.appendChild(newWeaponEntry);
+		});
+
 		// Вставляем в DOM
 		app.innerHTML = "";
 		app.appendChild(clone);
@@ -350,7 +373,6 @@
 		modal.style.display = "none";
 	}
 
-	// Обработчики для кнопок модала
 	subtractButton.addEventListener("click", () => {
 		updateHP("subtract");
 	});
@@ -409,15 +431,14 @@
 		return "Empty.webp"
 	}
 	
-	function printFeatWithIcon(feat, actionType, actions)
+	function printFeatWithIcon(template, feat, actionType, actions)
 	{
-		const newItem = featTemplate.content.cloneNode(true);
+		const newItem = template.content.cloneNode(true);
 		const actionIcon = getActionIcon(actionType, actions);
-		console.log(feat);
-		  newItem.querySelector("#featName").innerHTML = `
+		newItem.querySelector("#featName").innerHTML = `
 			${feat[0]}   <img src="/static/icons/actions/${actionIcon}" class="img-fluid" style="max-width: 20px; background: transparent;">
 		  `;
 		  newItem.querySelector("#featType").textContent = feat[1];
 
-		  listFeats.appendChild(newItem);
+		  return newItem;
 	}

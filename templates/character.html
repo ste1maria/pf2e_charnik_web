@@ -193,13 +193,46 @@
 			</template>
 		</ul>
 	  </div>
-      <div class="screen" id="armorWeaponScreen">
-          <div id="weaponSection">
+      <div class="screen d-flex align-items-center flex-column" id="armorWeaponScreen">
+		<ul class="list-group text-info mt-2" id="weaponSection">
+			<template id="weaponTemplate">
+				<li class="list-group-item d-flex flex-row" id="weaponEntry">
+					<div class="d-flex flex-column" id="weaponCharacteristics">
+						<div class="text-info font-weight-bold" id="weaponName"></div>
+						<div class="text-info" id="weaponDamage"></div>
+						<div class="text-info" id="weaponAttackRoll"></div>
+					</div>
+					<div id="weaponProficiencyIcon"></div>
+				</li>
+			</template>
+		</ul>
 
-          </div>
-          <div id="armorSection">
-
-          </div>
+		<ul class="list-group text-info mt-2" id="armorSection">
+			<template id="armorTemplate">
+				<li class="list-group-item d-flex flex-row">
+					<li class="list-group-item d-flex flex-column" id="armorEntry">
+						<div class="text-info" id="armorName"></div>
+						<div class="text-info" id="armorAC"></div>
+						<div class="text-info" id="armorDexCap"></div>
+					</li>
+					<div id="armorProficiencyIcon"></div>
+				</li>
+			</template>
+			<template id="shieldTemplate">
+				<li class="list-group-item d-flex flex-column" id="shieldEntry">
+					<div class="text-info" id="shieldName"></div>
+					<div class="text-info" id="shieldAC"></div>
+					<div class="text-info" id="armorHarndess"></div>
+					<div class="text-info" id="HP (BT)"></div>
+				</li>
+			</template>
+			<div id class = "d-flex flex-row" id="armorProficiencies">
+				<div id="iconLightArmorProf"></div><div>Light Armor</div>
+				<div id="iconMediumArmorProf"></div><div>Medium Armor</div>
+				<div id="iconHeavyArmorProf"></div><div>Heavy Armor</div>
+				<div id="iconUnarmoredProf"></div><div>Unarmored</div>
+			</div>
+		</ul>
 
       </div>
       <div class="screen" id="spellsScreen">Spells</div>

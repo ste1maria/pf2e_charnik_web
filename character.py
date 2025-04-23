@@ -296,5 +296,19 @@ class Character:
             feat_type = "special"
         else:
             return ""
-
         return db.get_feat_description(feat_name, feat_type)
+
+    def get_armor_description(self, armor):
+
+        pass
+
+    def get_weapon_description(self, weapon_name):
+        weapon = {}
+        for weapon_item in self.weapons:
+            if weapon_item["name"] == weapon_name:
+                weapon = weapon_item
+                break
+        if len(weapon) is 0:
+            print("Cannot find the requested weapon in the inventory.")
+            return []
+        return db.get_weapon_description(weapon)

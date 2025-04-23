@@ -140,7 +140,7 @@
 		const listSpecialFeats = clone.querySelector("#listSpecialFeats");
 		
 		data.class_feats.forEach(feat => {
-		  fetch(`/get_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
+		  fetch(`/get_feat_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
 			.then(res => res.json())
 			.then(data => {
 				listFeats.appendChild(printFeatWithIcon(featTemplate, feat, data.actionType, data.actions));
@@ -151,7 +151,7 @@
 		});
 		
 		data.skill_feats.forEach(feat => {
-		  fetch(`/get_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
+		  fetch(`/get_feat_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
 			.then(res => res.json())
 			.then(data => {
 				listFeats.appendChild(printFeatWithIcon(featTemplate, feat, data.actionType, data.actions));
@@ -162,7 +162,7 @@
 		}); 
 		
 		data.heritage_feats.forEach(feat => {
-		  fetch(`/get_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
+		  fetch(`/get_feat_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
 			.then(res => res.json())
 			.then(data => {
 				listFeats.appendChild(printFeatWithIcon(featTemplate, feat, data.actionType, data.actions));
@@ -173,7 +173,7 @@
 		});
 		
 		data.ancestry_feats.forEach(feat => {
-		  fetch(`/get_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
+		  fetch(`/get_feat_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
 			.then(res => res.json())
 			.then(data => {
 				listFeats.appendChild(printFeatWithIcon(featTemplate, feat, data.actionType, data.actions));
@@ -186,7 +186,7 @@
 		data.special_feats.forEach(feat => {
 		  const newItem = featTemplate.content.cloneNode(true);
 
-		  fetch(`/get_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
+		  fetch(`/get_feat_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
 			.then(res => res.json())
 			.then(data => {
 				console.log(data);
@@ -209,24 +209,98 @@
 		const weaponTemplate = clone.querySelector("#weaponTemplate");
 		const listWeapons = clone.querySelector("#weaponSection");
 
-		data.weapons.forEach(weapon => {
+		if (Object.keys(data.weapons).length === 0)
+		{
 			const newWeaponEntry = weaponTemplate.content.cloneNode(true);
-		
-			newWeaponEntry.querySelector("#weaponName").innerHTML = `
-				${weapon.name} <span class="icon-prof ${getSkillProficiency(data.proficiencies[weapon.prof])}">
-				</span>			
-			`;
-
-			newWeaponEntry.querySelector("#weaponDamage").innerHTML = `
-				Damage: ${weapon.die} + ${weapon.damageBonus}; ${weapon.damageType}
-			`;
-			newWeaponEntry.querySelector("#weaponAttackRoll").innerHTML = `
-				Hit: +${weapon.attack}
-			`;
-
+			newWeaponEntry.querySelector("#weaponName").textContent = "No weapon";
 			listWeapons.appendChild(newWeaponEntry);
-		});
+		}
+		else 
+		{
+			data.weapons.forEach(weapon => {
+				const newWeaponEntry = weaponTemplate.content.cloneNode(true);
+			
+				newWeaponEntry.querySelector("#weaponName").innerHTML = `
+					${weapon.name} <span class="icon-prof ${getSkillProficiency(data.proficiencies[weapon.prof])}">
+					</span>			
+				`;
+	
+				newWeaponEntry.querySelector("#weaponDamage").innerHTML = `
+					Damage: ${weapon.die} + ${weapon.damageBonus}; ${weapon.damageType}
+				`;
+				newWeaponEntry.querySelector("#weaponAttackRoll").innerHTML = `
+					Hit: +${weapon.attack}
+				`;
+				fetch(`/get_weapon_flairs?char_id=${characterId}&weapon_name=${encodeURIComponent(weapon.name)}`)
+					.then(res => res.json())
+					.then(data => {
+						//create flairs
+					});
+	
+				listWeapons.appendChild(newWeaponEntry);
+			});
+		}
+		
+		// armor
+		const armorTemplate = clone.querySelector("#armorTemplate");
+		const shieldTemplate = clone.querySelector("#shieldTemplate");
+		const listArmor = clone.querySelector("#armorSection");
 
+		if (Object.keys(data.armor).length === 0)
+		{
+			const newArmorEntry = armorTemplate.content.cloneNode(true);
+			newArmorEntry.querySelector("#armorName").textContent = "No armor";
+			listArmor.appendChild(newArmorEntry);
+		}
+		else 
+		{
+			data.armor.forEach(armor => {
+				if (armor.prof === "shield") 
+				{
+					const newShieldEntry = shieldTemplate.content.cloneNode(true);
+					newShieldEntry.querySelector("#shieldName").innerHTML = `
+						<span class="icon-prof ${getSkillProficiency(data.proficiencies[armor.prof])}">
+						</span>	${armor.name} 		 
+					`;
+					newShieldEntry.querySelector("#shieldAC").textContent = `AC bonus: ${data.acTotal.shieldBonus}`;
+					newShieldEntry.querySelector("#armorHarndess").textContent = `-hardness coming soon-`;
+					newShieldEntry.querySelector("#HP(BT)").textContent = `Shield health: `;
+					listArmor.appendChild(newShieldEntry);
+				}
+				else 
+				{
+					const newArmorEntry = armorTemplate.content.cloneNode(true);
+					newArmorEntry.querySelector("#armorName").innerHTML = `
+						<span class="icon-prof ${getSkillProficiency(data.proficiencies[armor.prof])}">
+						</span>	${armor.name} 	
+					`;	 
+					newArmorEntry.querySelector("#armorAC").textContent = `AC bonus: ...`;
+					newArmorEntry.querySelector("#armorDexCap").textContent = `Penalty: ...`;
+					listArmor.appendChild(newArmorEntry);
+				}
+			});
+		}
+
+		clone.querySelector("#lightArmorProf").innerHTML = `
+			<span class="icon-prof ${getSkillProficiency(data.proficiencies["light"])}"
+			style="margin-left:1rem;">
+			</span>Light
+		`;
+		clone.querySelector("#mediumArmorProf").innerHTML = `
+			<span class="icon-prof ${getSkillProficiency(data.proficiencies["medium"])}"
+			style="margin-left:1rem;">
+			</span>Medium
+		`;
+		clone.querySelector("#heavyArmorProf").innerHTML = `
+			<span class="icon-prof ${getSkillProficiency(data.proficiencies["heavy"])}"
+			style="margin-left:1rem;">
+			</span>Heavy
+		`;
+		clone.querySelector("#unarmoredProf").innerHTML = `
+			<span class="icon-prof ${getSkillProficiency(data.proficiencies["unarmored"])}"
+			style="margin-left:1rem;">
+			</span>Unarmored
+		`;
 		// Вставляем в DOM
 		app.innerHTML = "";
 		app.appendChild(clone);
@@ -305,7 +379,7 @@
 			if (!featNameEl) return;
 
 			const featName = featNameEl.textContent.trim();
-			fetch(`/get_description?char_id=${characterId}&feat_name=${encodeURIComponent(featName)}`)
+			fetch(`/get_feat_description?char_id=${characterId}&feat_name=${encodeURIComponent(featName)}`)
 				.then(res => res.json())
 				.then(data => {
 					openFeatModal(data.description);
@@ -320,7 +394,7 @@
 			if (!featNameEl) return;
 
 			const featName = featNameEl.textContent.trim();
-			fetch(`/get_description?char_id=${characterId}&feat_name=${encodeURIComponent(featName)}`)
+			fetch(`/get_feat_description?char_id=${characterId}&feat_name=${encodeURIComponent(featName)}`)
 				.then(res => res.json())
 				.then(data => {
 					openFeatModal(data.description);
@@ -328,30 +402,33 @@
 		});
 	});
 	
-		
-	const modal = document.getElementById("hpModal");
-	const closeModal = document.querySelector("#hpModal .close");
+	// HP modification modal
+	const hpModal = document.getElementById("hpModal");
+	const closeHpModal = document.querySelector("#hpModal .close");
 	const modalCurrentHP = document.getElementById("modalCurrentHP");
 	const hpAdjustmentInput = document.getElementById("hpAdjustment");
 	const subtractButton = document.getElementById("subtractHP");
 	const addButton = document.getElementById("addHP");
 
 	function openHpModal() {
-		modal.style.display = "block";
-		modal.classList.remove("hidden");
+		hpModal.style.display = "block";
+		hpModal.classList.remove("hidden");
 		// Получаем текущее значение HP из hpDisplay
 		const currentHP = parseInt(hpDisplay.textContent, 10);
 		modalCurrentHP.textContent = currentHP;
 		hpAdjustmentInput.value = ""; // очистить поле ввода
 	}
 
-	closeModal.addEventListener("click", () => {
-		modal.style.display = "none";
+	closeHpModal.addEventListener("click", () => {
+		hpModal.style.display = "none";
 	});
 
 	window.addEventListener("click", (event) => {
-		if (event.target === modal) {
-			modal.style.display = "none";
+		if (event.target === hpModal) {
+			hpModal.style.display = "none";
+		}
+		if (event.target === featModal) {
+			featModal.style.display = "none";
 		}
 	});
 
@@ -370,7 +447,7 @@
 		}
 		hpDisplay.textContent = newHP;
 		// Закрываем модальное окно
-		modal.style.display = "none";
+		hpModal.style.display = "none";
 	}
 
 	subtractButton.addEventListener("click", () => {
@@ -380,7 +457,8 @@
 	addButton.addEventListener("click", () => {
 		updateHP("add");
 	});		
-		
+	
+	// feat description modal
 	const closeFeatModal = document.querySelector("#featInfoModal .close");
 	const featModal = document.getElementById("featInfoModal");
 	const featModalText = document.getElementById("featModalText");
@@ -391,15 +469,11 @@
 		featModalText.innerHTML = `${featDescription}`;
 	}
 	
-	window.addEventListener("click", (event) => {
-		if (event.target === featModal) {
-		  featModal.style.display = "none";
-		}
-	});
 	closeFeatModal.addEventListener("click", () => {
 		featModal.style.display = "none";
 	});
 
+	// helper functions
 	function getProficiencyLevel(ability, level) {
 	  if ((ability-level) < 2) return "untrained";
 	  if ((ability-level) >= 2 && (ability-level) < 4) return "trained";
@@ -418,8 +492,7 @@
 	  return "untrained";
 	}
 	
-	function getActionIcon(actionType, actions)
-	{
+	function getActionIcon(actionType, actions)	{
 		if (actions === null) {
 			if (actionType === "reaction") return "Reaction.webp";
 			if (actionType === "passive") return "Empty.webp";
@@ -431,14 +504,13 @@
 		return "Empty.webp"
 	}
 	
-	function printFeatWithIcon(template, feat, actionType, actions)
-	{
+	function printFeatWithIcon(template, feat, actionType, actions)	{
 		const newItem = template.content.cloneNode(true);
 		const actionIcon = getActionIcon(actionType, actions);
 		newItem.querySelector("#featName").innerHTML = `
-			${feat[0]}   <img src="/static/icons/actions/${actionIcon}" class="img-fluid" style="max-width: 20px; background: transparent;">
-		  `;
-		  newItem.querySelector("#featType").textContent = feat[1];
+			${feat[0]}<img src="/static/icons/actions/${actionIcon}" class="img-fluid" style="max-width: 20px; margin-left:1rem;">
+		`;
+		newItem.querySelector("#featType").textContent = feat[1];
 
 		  return newItem;
 	}

@@ -6,11 +6,13 @@ base_dir = os.path.dirname(__file__)
 backgrounds_json = os.path.join(base_dir, "data", "backgrounds.json")
 classes_json =  os.path.join(base_dir, "data", "classes.json")
 
-class_feats_json =  os.path.join(base_dir, "data", "class-feats.json")
-ancestry_feats_json =  os.path.join(base_dir, "data", "ancestry-feats.json")
-skill_feats_json =  os.path.join(base_dir, "data", "skill-feats.json")
-special_feats_json = os.path.join(base_dir, "data", "special-feats.json")
+class_feats_json =  os.path.join(base_dir, "data/feats", "class-feats.json")
+ancestry_feats_json =  os.path.join(base_dir, "data/feats", "ancestry-feats.json")
+skill_feats_json =  os.path.join(base_dir, "data/feats", "skill-feats.json")
+special_feats_json = os.path.join(base_dir, "data/feats", "special-feats.json")
 
+light_armor_json = os.path.join(base_dir, "data/armor", "light-armor.json")
+weapons_json =  os.path.join(base_dir, "data", "weapons.json")
 
 def get_background_description(background):
     with open(backgrounds_json, 'r') as bg:
@@ -46,3 +48,19 @@ def get_feat_description(feat_name, feat_type):
     except Exception as exc:
         print("Error while reading database: ", str(exc))
 
+def get_armor_description(armor):
+    pass
+
+def get_weapon_description(weapon):
+    if len(weapon) is 0:
+        return []
+    weapon_name = weapon["name"]
+    weapon_flairs = []
+    try:
+        with (open(weapons_json) as weapons_db):
+            weapon_info = json.load(weapons_db)
+            weapon_flairs = weapon_info[weapon_name]["traits"]["value"]
+    except Exception as exc:
+        print("Error while reading weapons database: ", str(exc))
+
+    return weapon_flairs

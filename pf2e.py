@@ -77,8 +77,8 @@ def get_character():
 def character_page():
     return render_template("character.html")
 
-@app.route("/get_description")
-def get_description():
+@app.route("/get_feat_description")
+def get_feat_description():
     char_id = request.args.get("char_id")
     feat_name = request.args.get("feat_name")
 
@@ -101,6 +101,26 @@ def get_description():
 
     return jsonify({"description":"N/A", "actionType":"N/A", "actions":"N/A"})
 
+@app.route("/get_weapon_flairs")
+def get_weapon_flairs():
+    char_id = request.args.get("char_id")
+    weapon_name = request.args.get("weapon_name")
+
+    if not char_id or not weapon_name:
+        return jsonify({"description": "Недостаточно параметров"}), 400
+
+    char_path = os.path.join(CHAR_DIR, f"{char_id}.json")
+    if not os.path.exists(char_path):
+        return jsonify({"description": "Персонаж не найден"}), 404
+
+    char = Character(char_path)
+    return_value = jsonify([])
+    try:
+        return_value = jsonify(char.get_weapon_description(weapon_name))
+    except Exception as exc:
+        print("Error while getting weapon description: ", exc)
+        
+    return return_value
 
 if __name__ == "__main__":
     app.run(debug=True, port=5050)  # Running on http://localhost:5050

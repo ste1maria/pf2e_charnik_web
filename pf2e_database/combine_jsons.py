@@ -43,7 +43,6 @@ def create_armor_index():
             try:
                 delete_file = False
                 subdir = "equipment"
-                name = None
                 filepath = os.path.join(equipment_dir, filename)
                 with (open(filepath, 'r', encoding="utf-8") as f):
                     data = json.load(f)
@@ -53,17 +52,17 @@ def create_armor_index():
                         delete_file = True
                     else:
                         name = data.get("name")
-                if name:
-                    if data.get("type") == "weapon":
-                        subdir = "weapons"
-                    elif data.get("type") == "armor":
-                        subdir = "armor"
-                    equipment_index[name] = os.path.join(equipment_dir, subdir, filename)
+                    if name:
+                        if data.get("type") == "weapon":
+                            subdir = "weapons"
+                        elif data.get("type") == "armor":
+                            subdir = "armor"
                 if delete_file:
                     os.remove(filepath)
                     print("deleted", filepath)
                 else:
-                    shutil.move(filepath, equipment_index[name])
+                    equipment_index[name] = os.path.relpath(equipment_dir + "/" + subdir + "/" + filename, equipment_dir)
+                    shutil.move(filepath, os.path.join(equipment_dir, equipment_index[name]))
             except Exception as e:
                 print(f"Error in file {filename}: {e}")
     with open (os.path.join(equipment_dir, "equipment_index.json"), "w") as output:

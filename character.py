@@ -283,10 +283,3 @@ class Character:
         except Exception as exc:
             print("check")
             pass
-
-    def get_feat_description(self, feat_name):
-        return db.get_feat_description(feat_name)
-
-
-    def get_weapon_flairs(self, weapon_name):
-        return db.get_weapon_flairs(weapon_name)

@@ -29,7 +29,6 @@ def get_feat_description(feat_name):
 
     return feat_info
 
-
 def get_equip_description(equip_name):
     pass
 
@@ -48,3 +47,6 @@ def get_weapon_flairs(weapon):
         print("Error while reading weapons database: ", str(exc))
 
     return weapon_flairs
+
+def get_armor_details(armor):
+    pass

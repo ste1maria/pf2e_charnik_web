@@ -7,6 +7,7 @@ import tempfile, os, json
 from character import Character
 import traceback
 import random, string
+import pf2e_database.fetch_data as db
 
 app = Flask(__name__, template_folder="./templates")
 
@@ -79,21 +80,14 @@ def character_page():
 
 @app.route("/get_feat_description")
 def get_feat_description():
-    char_id = request.args.get("char_id")
     feat_name = request.args.get("feat_name")
 
-    if not char_id or not feat_name:
+    if not feat_name:
         return jsonify({"description": "Недостаточно параметров"}), 400
-
-    char_path = os.path.join(CHAR_DIR, f"{char_id}.json")
-    if not os.path.exists(char_path):
-        return jsonify({"description": "Персонаж не найден"}), 404
-
-    char = Character(char_path)
 
     return_value = jsonify({"description":"N/A", "actionType":"N/A", "actions":"N/A"})
     try:
-        description, action_type, actions = char.get_feat_description(feat_name)
+        description, action_type, actions = db.get_feat_description(feat_name)
         return_value = jsonify({"description": description, "actionType": action_type, "actions": actions})
         return return_value
     except Exception as exc:
@@ -103,20 +97,13 @@ def get_feat_description():
 
 @app.route("/get_weapon_flairs")
 def get_weapon_flairs():
-    char_id = request.args.get("char_id")
     weapon_name = request.args.get("weapon_name")
-
-    if not char_id or not weapon_name:
+    if not weapon_name:
         return jsonify({"description": "Недостаточно параметров"}), 400
 
-    char_path = os.path.join(CHAR_DIR, f"{char_id}.json")
-    if not os.path.exists(char_path):
-        return jsonify({"description": "Персонаж не найден"}), 404
-
-    char = Character(char_path)
     return_value = jsonify([])
     try:
-        return_value = jsonify(char.get_weapon_flairs(weapon_name))
+        return_value = jsonify(db.get_weapon_flairs(weapon_name))
     except Exception as exc:
         print("Error while getting weapon description: ", exc)
         

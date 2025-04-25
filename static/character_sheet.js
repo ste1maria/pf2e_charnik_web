@@ -140,7 +140,7 @@
 		const listSpecialFeats = clone.querySelector("#listSpecialFeats");
 		
 		data.class_feats.forEach(feat => {
-		  fetch(`/get_feat_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
+		  fetch(`/get_feat_description?feat_name=${encodeURIComponent(feat[0])}`)
 			.then(res => res.json())
 			.then(data => {
 				listFeats.appendChild(printFeatWithIcon(featTemplate, feat, data.actionType, data.actions));
@@ -151,7 +151,7 @@
 		});
 		
 		data.skill_feats.forEach(feat => {
-		  fetch(`/get_feat_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
+		  fetch(`/get_feat_description?feat_name=${encodeURIComponent(feat[0])}`)
 			.then(res => res.json())
 			.then(data => {
 				listFeats.appendChild(printFeatWithIcon(featTemplate, feat, data.actionType, data.actions));
@@ -162,7 +162,7 @@
 		}); 
 		
 		data.heritage_feats.forEach(feat => {
-		  fetch(`/get_feat_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
+		  fetch(`/get_feat_description?feat_name=${encodeURIComponent(feat[0])}`)
 			.then(res => res.json())
 			.then(data => {
 				listFeats.appendChild(printFeatWithIcon(featTemplate, feat, data.actionType, data.actions));
@@ -173,7 +173,7 @@
 		});
 		
 		data.ancestry_feats.forEach(feat => {
-		  fetch(`/get_feat_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
+		  fetch(`/get_feat_description?feat_name=${encodeURIComponent(feat[0])}`)
 			.then(res => res.json())
 			.then(data => {
 				listFeats.appendChild(printFeatWithIcon(featTemplate, feat, data.actionType, data.actions));
@@ -186,13 +186,11 @@
 		data.special_feats.forEach(feat => {
 		  const newItem = featTemplate.content.cloneNode(true);
 
-		  fetch(`/get_feat_description?char_id=${characterId}&feat_name=${encodeURIComponent(feat[0])}`)
+		  fetch(`/get_feat_description?feat_name=${encodeURIComponent(feat)}`)
 			.then(res => res.json())
 			.then(data => {
-				console.log(data);
-				console.log(feat);
 			  const actionIcon = getActionIcon(data.actionType, data.actions);
-
+				
 			  newItem.querySelector("#featName").innerHTML = `
 				${feat}   <img src="/static/icons/actions/${actionIcon}" class="img-fluid" 
 				style="max-width: 18px; background: transparent;">
@@ -234,7 +232,7 @@
 
   				const flairContainer = newWeaponEntry.querySelector(".weapon-flairs");
 
-				fetch(`/get_weapon_flairs?char_id=${characterId}&weapon_name=${encodeURIComponent(weapon.name)}`)
+				fetch(`/get_weapon_flairs?weapon_name=${encodeURIComponent(weapon.name)}`)
 					.then(res => res.json())
 					.then(flairs => {
 						flairContainer.innerHTML = ""; // очистим перед вставкой
@@ -314,7 +312,7 @@
 		app.innerHTML = "";
 		app.appendChild(clone);
 		
-		 const event = new CustomEvent("characterRendered");
+		const event = new CustomEvent("characterRendered");
 		app.dispatchEvent(event);
 	}
 
@@ -388,7 +386,7 @@
 			if (!featNameEl) return;
 
 			const featName = featNameEl.textContent.trim();
-			fetch(`/get_feat_description?char_id=${characterId}&feat_name=${encodeURIComponent(featName)}`)
+			fetch(`/get_feat_description?feat_name=${encodeURIComponent(featName)}`)
 				.then(res => res.json())
 				.then(data => {
 					openFeatModal(data.description);
@@ -403,7 +401,7 @@
 			if (!featNameEl) return;
 
 			const featName = featNameEl.textContent.trim();
-			fetch(`/get_feat_description?char_id=${characterId}&feat_name=${encodeURIComponent(featName)}`)
+			fetch(`/get_feat_description?feat_name=${encodeURIComponent(featName)}`)
 				.then(res => res.json())
 				.then(data => {
 					openFeatModal(data.description);

@@ -281,8 +281,20 @@
 						<span class="icon-prof ${getSkillProficiency(data.proficiencies[armor.prof])}">
 						</span>	${armor.name} 	
 					`;	 
-					newArmorEntry.querySelector("#armorAC").textContent = `AC bonus: ...`;
-					newArmorEntry.querySelector("#armorDexCap").textContent = `Penalty: ...`;
+					
+					const armorAcEl = newArmorEntry.querySelector("#armorAC");
+					const dexCapEl = newArmorEntry.querySelector("#armorDexCap");
+					const checkPenaltyEl = newArmorEntry.querySelector("#armorCheckPenalty");
+					
+					fetch(`/get_armor_data?armor_name=${encodeURIComponent(armor.name)}`)
+					.then(res => res.json())
+					.then(data => {
+						armorAcEl.innerHTML = `AC:<br>${data.acBonus}`;
+						dexCapEl.innerHTML = `Dex Cap:<br>${data.dexCap}`;
+						checkPenaltyEl.innerHTML = `Check penalty:<br>${data.checkPenalty}`;
+					});
+					
+
 					listArmor.appendChild(newArmorEntry);
 				}
 			});

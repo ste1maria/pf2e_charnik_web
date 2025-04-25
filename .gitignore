@@ -4,3 +4,4 @@
 /.venv
 /venv
 /characters
+*.code-workspace

@@ -39,7 +39,6 @@ def get_weapon_flairs(weapon):
         with open(equipment_index_file, "r") as index_file:
             index = json.load(index_file)
             weapon_filename = index.get(weapon)
-        print(weapon, weapon_filename)
         if weapon_filename:
             with open(os.path.join(equipment_dir, weapon_filename), "r") as weapon_file:
                 weapon_flairs = json.load(weapon_file).get("system", {}).get("traits", {}).get("value", [])
@@ -49,4 +48,19 @@ def get_weapon_flairs(weapon):
     return weapon_flairs
 
 def get_armor_details(armor):
-    pass
+    armor_details = {"acBonus": 0, "dexCap":0, "checkPenalty":0}
+    armor_filename = None
+    try:
+        with open(equipment_index_file, "r") as index_file:
+            index = json.load(index_file)
+            armor_filename = index.get(armor)
+        if armor_filename:
+            with open(os.path.join(equipment_dir, armor_filename), "r") as armor_file:
+                armor_data = json.load(armor_file)
+                armor_details['acBonus'] = armor_data.get("system", {}).get("acBonus", {})
+                armor_details["dexCap"] = armor_data.get("system", {}).get("dexCap", {})
+                armor_details["checkPenalty"] = armor_data.get("system", {}).get("checkPenalty", {})
+    except Exception as exc:
+        print("Error while reading armor database: ", str(exc))
+
+    return armor_details

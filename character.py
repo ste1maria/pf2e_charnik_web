@@ -279,6 +279,7 @@ class Character:
             for special_feat in self.specials:
                 if special_feat not in self.special_feats:
                     self.special_feats.append(special_feat)
+                    
 
         except Exception as exc:
             print("check")

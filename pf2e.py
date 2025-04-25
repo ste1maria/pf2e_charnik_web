@@ -116,7 +116,7 @@ def get_weapon_flairs():
     char = Character(char_path)
     return_value = jsonify([])
     try:
-        return_value = jsonify(char.get_weapon_description(weapon_name))
+        return_value = jsonify(char.get_weapon_flairs(weapon_name))
     except Exception as exc:
         print("Error while getting weapon description: ", exc)
         

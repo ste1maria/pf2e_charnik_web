@@ -3,63 +3,47 @@ import os
 
 base_dir = os.path.dirname(__file__)
 
-backgrounds_json = os.path.join(base_dir, "data", "backgrounds.json")
-classes_json =  os.path.join(base_dir, "data", "classes.json")
+feats_dir = os.path.join(base_dir, "data/feats")
+feats_index_file = os.path.join(feats_dir, "feat_index.json")
 
-class_feats_json =  os.path.join(base_dir, "data/feats", "class-feats.json")
-ancestry_feats_json =  os.path.join(base_dir, "data/feats", "ancestry-feats.json")
-skill_feats_json =  os.path.join(base_dir, "data/feats", "skill-feats.json")
-special_feats_json = os.path.join(base_dir, "data/feats", "special-feats.json")
+equipment_dir = os.path.join(base_dir, "data/equipment")
+equipment_index_file = os.path.join(equipment_dir, "equipment_index.json")
 
-light_armor_json = os.path.join(base_dir, "data/armor", "light-armor.json")
-weapons_json =  os.path.join(base_dir, "data", "weapons.json")
 
-def get_background_description(background):
-    with open(backgrounds_json, 'r') as bg:
-        bg_data = json.load(bg)
-        return bg_data[background]['system']['description']['value']
-
-def get_class_description(_class):
-    with open(classes_json, 'r') as cl:
-        class_data = json.load(cl)
-        return class_data[_class]['system']['description']['value']
-
-def get_feat_description(feat_name, feat_type):
-    json_source = ""
-    if feat_type == "class":
-        json_source = class_feats_json
-    elif feat_type == "ancestry":
-        json_source = ancestry_feats_json
-    elif feat_type == "skill":
-        json_source = skill_feats_json
-    elif feat_type == "special":
-        json_source = special_feats_json
-    else:
-        return ""
-
+def get_feat_description(feat_name):
+    feat_info = ["N/A", "N/A", "N/A"]
     try:
-        print(feat_name, feat_type, json_source)
-        with (open(json_source) as feat_file):
-            feats_info = json.load(feat_file)
-            return [feats_info[feat_name]['description']['value'],\
-                    feats_info[feat_name]['actionType']['value'],\
-                    feats_info[feat_name]['actions']['value']]
-
+        feat_filename = None
+        with open(feats_index_file, 'r', encoding="utf-8") as index_file:
+            feat_index = json.load(index_file)
+            feat_filename = feat_index.get(feat_name)
+        if feat_filename:
+            with open(os.path.join(feats_dir, feat_filename), "r", encoding="utf-8") as feat_file:
+                feat = json.load(feat_file)
+                feat_info =[feat.get("system",{}).get("description", {}).get("value", ""),
+                            feat.get("system",{}).get("actionType", {}).get("value", ""),
+                            feat.get("system",{}).get("actions", {}).get("value", "")
+                ]
     except Exception as exc:
         print("Error while reading database: ", str(exc))
 
-def get_armor_description(armor):
+    return feat_info
+
+
+def get_equip_description(equip_name):
     pass
 
-def get_weapon_description(weapon):
-    if len(weapon) is 0:
-        return []
-    weapon_name = weapon["name"]
+def get_weapon_flairs(weapon):
     weapon_flairs = []
+    weapon_filename = None
     try:
-        with (open(weapons_json) as weapons_db):
-            weapon_info = json.load(weapons_db)
-            weapon_flairs = weapon_info[weapon_name]["traits"]["value"]
+        with open(equipment_index_file, "r") as index_file:
+            index = json.load(index_file)
+            weapon_filename = index.get(weapon)
+        print(weapon, weapon_filename)
+        if weapon_filename:
+            with open(os.path.join(equipment_dir, weapon_filename), "r") as weapon_file:
+                weapon_flairs = json.load(weapon_file).get("system", {}).get("traits", {}).get("value", [])
     except Exception as exc:
         print("Error while reading weapons database: ", str(exc))
 

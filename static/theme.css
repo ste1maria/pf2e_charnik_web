@@ -1459,6 +1459,10 @@ table {
 .mx-auto {
   margin-left: auto !important; }
 
+.ml-1 {
+    margin-left: 1rem;
+  }
+
  .skill-name, .lore-name {
 	font-size: 1rem;
 	align-content: center;
@@ -1497,6 +1501,13 @@ table {
   background-color: dodgerblue;
 }
 
-.weapon-flair {
-  background-color: dodgerblue;
+.flair-tag {
+  display: inline-block;
+  background-color: #023f68;
+  color: #c0c0c0;
+  padding: 0.2em 0.6em;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin: 0.2em;
 }
+

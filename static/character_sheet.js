@@ -231,10 +231,19 @@
 				newWeaponEntry.querySelector("#weaponAttackRoll").innerHTML = `
 					Hit: +${weapon.attack}
 				`;
+
+  				const flairContainer = newWeaponEntry.querySelector(".weapon-flairs");
+
 				fetch(`/get_weapon_flairs?char_id=${characterId}&weapon_name=${encodeURIComponent(weapon.name)}`)
 					.then(res => res.json())
-					.then(data => {
-						//create flairs
+					.then(flairs => {
+						flairContainer.innerHTML = ""; // очистим перед вставкой
+						flairs.forEach(flair => {
+							const tag = document.createElement("div");
+							tag.textContent = flair;
+							tag.classList.add("flair-tag"); // кастомный стиль
+							flairContainer.appendChild(tag);
+						});
 					});
 	
 				listWeapons.appendChild(newWeaponEntry);

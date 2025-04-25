@@ -70,4 +70,4 @@ def create_armor_index():
         json.dump(equipment_index, output, indent=4 )
 
 if __name__ == "__main__":
-    pass
+    create_armor_index()

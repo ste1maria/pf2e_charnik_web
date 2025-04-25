@@ -1,6 +1,7 @@
 import parsing
 import os
 import pf2e_database.fetch_data as db
+from pf2e_database.fetch_data import get_armor_details
 
 skills_attributes = {
     "acrobatics": 'dex',
@@ -37,6 +38,7 @@ def count_modifier(data, attribute, is_decrease=False):
     return count
 
 
+
 class Character:
     name = "Unknown adventurer"
     age = "0"
@@ -71,7 +73,9 @@ class Character:
             }
     }
     strength = 0
+    strength_penalty = 0
     dex = 0
+    dex_penalty = 0
     con = 0
     intel = 0
     wis = 0
@@ -237,7 +241,9 @@ class Character:
                       count_modifier(self.stats["breakdown"], self.keyAbility)
 
             self.strength = count_modifier(self.stats["breakdown"], "str")
+            self.strength_penalty = self._get_penalty("str")
             self.dex = count_modifier(self.stats["breakdown"], "dex")
+            self.dex_penalty = self._get_penalty("dex")
             self.con = count_modifier(self.stats["breakdown"], "con")
             self.intel = count_modifier(self.stats["breakdown"], "int")
             self.wis = count_modifier(self.stats["breakdown"], "wis")
@@ -251,8 +257,15 @@ class Character:
 
             self.skills = {}
             for skill in skills_attributes.keys():
+                skill_penalty = 0
+                if skills_attributes[skill] == "str":
+                    skill_penalty = self.strength_penalty
+                elif skills_attributes[skill] == "dex":
+                    skill_penalty = self.dex_penalty
+
                 self.skills[skill] = (self.proficiencies[skill] + (self.level if self.proficiencies[skill] > 0 else 0)
-                                      + count_modifier(self.stats["breakdown"], skills_attributes[skill]))
+                                      + count_modifier(self.stats["breakdown"], skills_attributes[skill])) \
+                                      - skill_penalty
 
             self.lores = []
             for lore in json_data['lores']:
@@ -263,6 +276,8 @@ class Character:
             self.special_feats = []
             self.skill_feats = []
             self.ancestry_feats = []
+
+            self.attributes["speed"] = self._correct_speed()
 
             for feat in self.feats:
                 if "Class Feat" in feat:
@@ -279,8 +294,30 @@ class Character:
             for special_feat in self.specials:
                 if special_feat not in self.special_feats:
                     self.special_feats.append(special_feat)
-                    
 
         except Exception as exc:
             print("check")
             pass
+
+    def _get_penalty(self, stat):
+        penalty = 0
+        for armor in self.armor:
+            armor_details = get_armor_details(armor['name'])
+            if armor_details['strength'] > self.strength:
+                if stat == "dex":
+                    penalty += (-1)*armor_details["checkPenalty"] + ((self.dex - armor_details["dexCap"])
+                                                               if self.dex > armor_details["dexCap"]
+                                                                else 0)
+                elif stat == "str":
+                    penalty += (-1)*armor_details["checkPenalty"]
+        # add other items
+        return penalty
+
+    def _correct_speed(self):
+        speed = self.attributes["speed"]
+        for armor in self.armor:
+            armor_details = get_armor_details(armor['name'])
+            speed -= (-1) * armor_details['speedPenalty']
+        # add other items
+        return speed
+

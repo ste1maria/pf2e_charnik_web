@@ -48,7 +48,7 @@ def get_weapon_flairs(weapon):
     return weapon_flairs
 
 def get_armor_details(armor):
-    armor_details = {"acBonus": 0, "dexCap":0, "checkPenalty":0}
+    armor_details = {"acBonus": 0, "dexCap":0, "checkPenalty":0, "strength" :0, "speedPenalty" : 0}
     armor_filename = None
     try:
         with open(equipment_index_file, "r") as index_file:
@@ -60,6 +60,8 @@ def get_armor_details(armor):
                 armor_details['acBonus'] = armor_data.get("system", {}).get("acBonus", {})
                 armor_details["dexCap"] = armor_data.get("system", {}).get("dexCap", {})
                 armor_details["checkPenalty"] = armor_data.get("system", {}).get("checkPenalty", {})
+                armor_details["strength"] = armor_data.get("system", {}).get("strength", {})
+                armor_details["speedPenalty"] = armor_data.get("system", {}).get("speedPenalty", {})
     except Exception as exc:
         print("Error while reading armor database: ", str(exc))
 

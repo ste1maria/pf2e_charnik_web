@@ -8,6 +8,9 @@ feat_index = {}
 equipment_dir = os.path.join(base_dir, "data/equipment")
 equipment_index = {}
 
+bare_class_feats = os.path.join(base_dir, "data/classfeatures")
+sorted_class_feats = os.path.join(feat_dir, "class")
+
 def create_feats_index():
     for root, dirs, files in os.walk(feat_dir):
         for filename in files:
@@ -68,5 +71,23 @@ def create_armor_index():
     with open (os.path.join(equipment_dir, "equipment_index.json"), "w") as output:
         json.dump(equipment_index, output, indent=4 )
 
+def sort_feats():
+    for jsonfile in os.listdir(bare_class_feats):
+        if not jsonfile.endswith(".json"):
+            continue
+        try:
+            filepath = os.path.join(bare_class_feats, jsonfile)
+            _class = None
+            with open(filepath, 'r') as featfile:
+                data = json.load(featfile)
+                _class = data.get("system",{}).get('traits', {}).get('value', [])
+                if len(_class) == 0 or _class is None:
+                    continue
+            shutil.move(filepath, os.path.join(sorted_class_feats, _class[0]))
+
+        except Exception as e:
+            print(f'Exception while processing class feat: {jsonfile}: {e}')
+
+
 if __name__ == "__main__":
-    create_armor_index()
+    create_feats_index()

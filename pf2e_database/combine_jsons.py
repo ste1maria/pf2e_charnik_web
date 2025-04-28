@@ -1,4 +1,5 @@
 import os, json, shutil
+import re
 
 base_dir = os.path.dirname(__file__)
 
@@ -10,6 +11,29 @@ equipment_index = {}
 
 bare_class_feats = os.path.join(base_dir, "data/classfeatures")
 sorted_class_feats = os.path.join(feat_dir, "class")
+
+
+def clean_uuid_in_dict(data, target_key):
+    # Если data — это словарь
+    if isinstance(data, dict):
+        if target_key in data and isinstance(data[target_key], str):
+            data[target_key] = re.sub(
+                r'@UUID\[(.*?)\]',
+                lambda m: m.group(1).split('.')[-1],
+                data[target_key]
+            )
+        # Также рекурсивно пройтись по вложенным словарям
+        for value in data.values():
+            clean_uuid_in_dict(value, target_key)
+
+    # Если data — это список
+    elif isinstance(data, list):
+        for item in data:
+            clean_uuid_in_dict(item, target_key)
+
+    # Иначе ничего не делаем
+    return data
+
 
 def create_feats_index():
     for root, dirs, files in os.walk(feat_dir):
@@ -88,6 +112,20 @@ def sort_feats():
         except Exception as e:
             print(f'Exception while processing class feat: {jsonfile}: {e}')
 
+def clean_up_json_feats():
+    for root, dirs, files in os.walk(feat_dir):
+        for filename in files:
+            if not filename.endswith(".json"):
+                continue
+            filepath = os.path.join(root, filename)
+            try:
+                with open(filepath, 'r', encoding="utf-8") as f:
+                    data = json.load(f)
+                    cleaned_data = clean_uuid_in_dict(data, "value")
+                with open(filepath, 'w', encoding="utf-8") as f:
+                    json.dump(cleaned_data, f, ensure_ascii=False, indent=2)
+            except Exception as e:
+                print(f'Exception handling json {filename}: {e}')
 
 if __name__ == "__main__":
     create_feats_index()

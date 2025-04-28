@@ -17,10 +17,13 @@ def get_feat_description(feat_name):
         with open(feats_index_file, 'r', encoding="utf-8") as index_file:
             feat_index = json.load(index_file)
             feat_filename = feat_index.get(feat_name)
+            if feat_filename is None: # for example for Hunter's Edge: Flurry the file is just "Flurry"
+                if ":" in feat_name:
+                    feat_filename = feat_index.get(feat_name.split(":")[1].strip())
         if feat_filename:
             with open(os.path.join(feats_dir, feat_filename), "r", encoding="utf-8") as feat_file:
                 feat = json.load(feat_file)
-                feat_info =[feat.get("system",{}).get("description", {}).get("value", ""),
+                feat_info = [feat.get("system",{}).get("description", {}).get("value", ""),
                             feat.get("system",{}).get("actionType", {}).get("value", ""),
                             feat.get("system",{}).get("actions", {}).get("value", "")
                 ]

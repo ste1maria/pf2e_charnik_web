@@ -321,3 +321,6 @@ class Character:
         # add other items
         return speed
 
+    def get_spells(self):
+        return self.spell_casters
+

@@ -1,0 +1,39 @@
+{
+  "_id": "M3q0KIyuMvSgUZH7",
+  "img": "icons/magic/water/water-jet-wave-blue.webp",
+  "name": "Vanguard of Roaring Waters",
+  "system": {
+    "actionType": {
+      "value": "passive"
+    },
+    "actions": {
+      "value": null
+    },
+    "category": "classfeature",
+    "description": {
+      "value": "<p>Vanguards of roaring waters are found where rivers carve their way through mountains, creating fearsome rapids. They can also be found near bays where rivers meet the sea and create turbulent breakers and unpredictable undertows, coastal reefs that tear the bottoms from unwary ships and isolate islands, or anywhere else where water becomes violent and difficult to navigate safely. Vanguards of roaring waters encourage chaos and are easily bored.</p><hr /><p><strong>Apparition Skills</strong> Mountain Lore, River Lore</p>\n<p><strong>Apparition Spells</strong></p><ul><li><strong>Cantrip</strong> Rousing Splash</li><li><strong>1st</strong> Hydraulic Push</li><li><strong>2nd</strong> Mist</li><li><strong>3rd</strong> Crashing Wave</li><li><strong>4th</strong> Hydraulic Torrent</li><li><strong>5th</strong> Control Water</li><li><strong>6th</strong> Personal Ocean</li><li><strong>7th</strong> Dancing Fountain</li><li><strong>8th</strong> Whirlpool</li><li><strong>9th</strong> Wrathful Storm</li></ul><p><strong>Vessel Spell</strong> River Carving Mountains</p>\n<p><strong>Avatar</strong> <em>River that Splits the World</em> Speed 50 feet, swim Speed 70 feet</p>\n<p><strong>Melee</strong> <span class=\"action-glyph\">1</span> parting mountains (reach 15 feet, versatile S, water), <strong>Damage</strong> @Damage[(6d10+6)[bludgeoning]]</p>\n<p><strong>Ranged</strong> <span class=\"action-glyph\">1</span> crash into the sea (range 120 feet, versatile P, water), <strong>Damage</strong> @Damage[(6d6+6)[bludgeoning]]</p>"
+    },
+    "level": {
+      "value": 1
+    },
+    "prerequisites": {
+      "value": []
+    },
+    "publication": {
+      "license": "ORC",
+      "remaster": true,
+      "title": "Pathfinder War of Immortals"
+    },
+    "rules": [],
+    "traits": {
+      "otherTags": [
+        "animist-apparition"
+      ],
+      "rarity": "common",
+      "value": [
+        "animist"
+      ]
+    }
+  },
+  "type": "feat"
+}

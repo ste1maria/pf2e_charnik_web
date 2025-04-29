@@ -1,0 +1,36 @@
+{
+  "_id": "6HCI2iHyBZAr7a4P",
+  "img": "icons/sundries/documents/document-torn-diagram-tan.webp",
+  "name": "Studious Spells",
+  "system": {
+    "actionType": {
+      "value": "passive"
+    },
+    "actions": {
+      "value": null
+    },
+    "category": "classfeature",
+    "description": {
+      "value": "<p>Your hybrid study grants you additional spells that can enhance your power in combat. You gain two special 2nd-rank studious spell slots, which can be used to prepare Gecko Grip, Sure Strike, Water Breathing, and an additional spell depending on your hybrid study. You add any spells from this class feature to your spellbook. At 11th level, the extra slots increase to 3rd-rank and you add Haste and an additional spell depending on your hybrid study. At 13th level, the extra slots increase to 4th-rank and you add Fly and an additional spell depending on your hybrid study.</p>\n<p><strong>Aloof Firmament</strong> 7th: Water Walk; 11th: Wall of Wind; 13th: Variable Gravity</p>\n<p><strong>Inexorable Iron</strong> 7th: Enlarge; 11th: Earthbind; 13th: Planar Tether</p>\n<p><strong>Laughing Shadow</strong> 7th: Blur; 11th: Time Jump; 13th: Translocate</p>\n<p><strong>Sparkling Targe</strong> 7th: Resist Energy; 11th: Warding Aggression; 13th: Mountain Resilience</p>\n<p><strong>Starlit Span</strong> 7th: Darkvision; 11th: Wall of Wind; 13th: Unfettered Movement</p>\n<p><strong>Twisting Tree</strong> 7th: Embed Message; 11th: Slow; 13th: Flicker</p>\n<p><strong>Unfurling Brocade</strong> 7th: Web; 11th: Whirling Scarves; 13th: Planar Tether</p>\n<p><strong>Resurgent Maelstrom</strong> 7th: Water Walk, 11th: Aqueous Orb, 13th: Unfettered Movement</p>"
+    },
+    "level": {
+      "value": 7
+    },
+    "prerequisites": {
+      "value": []
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": false,
+      "title": "Pathfinder Secrets of Magic"
+    },
+    "rules": [],
+    "traits": {
+      "rarity": "common",
+      "value": [
+        "magus"
+      ]
+    }
+  },
+  "type": "feat"
+}

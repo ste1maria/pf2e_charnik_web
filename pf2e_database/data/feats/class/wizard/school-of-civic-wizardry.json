@@ -1,0 +1,39 @@
+{
+  "_id": "YZ2XPmx1WHyWtM0g",
+  "img": "icons/sundries/books/book-embossed-steel-brown.webp",
+  "name": "School of Civic Wizardry",
+  "system": {
+    "actionType": {
+      "value": "passive"
+    },
+    "actions": {
+      "value": null
+    },
+    "category": "classfeature",
+    "description": {
+      "value": "<p>Whether you studied in Manaket's Occularium or the Academy of Applied Magic, you learned that the fruits of arcane studies—like any other field—should ultimately help the common citizen. You've learned the humble art of construction, of finding lost people and things, of moving speedily among buildings and moats—yet these same arts can be turned to demolition, and the constructs you animate to build bridges can just as easily tear them down.</p>\n<p><strong>Curriculum</strong></p>\n<ul>\n<li><strong>cantrips:</strong> Prestidigitation, Read Aura</li>\n<li><strong>1st:</strong> Hydraulic Push, Pummeling Rubble, Summon Construct</li>\n<li><strong>2nd:</strong> Revealing Light, Water Walk</li>\n<li><strong>3rd:</strong> Cozy Cabin, Safe Passage</li>\n<li><strong>4th:</strong> Creation, Unfettered Movement</li>\n<li><strong>5th:</strong> Control Water, Wall of Stone</li>\n<li><strong>6th:</strong> Disintegrate, Wall of Force</li>\n<li><strong>7th:</strong> Planar Palace, Retrocognition</li>\n<li><strong>8th:</strong> Earthquake, Pinpoint</li>\n<li><strong>9th:</strong> Foresight</li>\n</ul>\n<p><strong>School Spells</strong> initial: Earthworks; advanced: Community Restoration</p>"
+    },
+    "level": {
+      "value": 1
+    },
+    "prerequisites": {
+      "value": []
+    },
+    "publication": {
+      "license": "ORC",
+      "remaster": true,
+      "title": "Pathfinder Player Core"
+    },
+    "rules": [],
+    "traits": {
+      "otherTags": [
+        "wizard-arcane-school"
+      ],
+      "rarity": "common",
+      "value": [
+        "wizard"
+      ]
+    }
+  },
+  "type": "feat"
+}

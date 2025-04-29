@@ -124,6 +124,28 @@ def get_armor_data():
 
     return return_value
 
+@app.route("/get_spells")
+def get_spells():
+    char_id = request.args.get("char_id")
+    if not char_id:
+        return jsonify({"description": "Недостаточно параметров"}), 400
+
+    char_path = os.path.join(CHAR_DIR, f"{char_id}.json")
+
+    if not os.path.exists(char_path):
+        return jsonify({"description": "Персонаж не найден"}), 404
+
+    char = Character(char_path)
+
+    return_value = jsonify({})
+    try:
+        return_value = jsonify(char.get_spells())
+    except Exception as exc:
+        print("Error while getting spells: ", exc)
+
+    return return_value
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=5050)  # Running on http://localhost:5050
 

@@ -320,6 +320,77 @@
 			style="margin-left:1rem;">
 			</span>Unarmored
 		`;
+
+		// spells
+		const tabSpellsTemplate = clone.querySelector("#tabSpellsCategory");
+		const tabButtonsContainer = clone.querySelector("#tabButtons");
+		const tabContentsContainer = clone.querySelector("#tab-contents");
+
+		if (data.spell_casters.length === 0)
+		{
+			const newSpellsEntry = classSpellsTemplate.content.cloneNode(true);
+			newSpellsEntry.querySelector(".spell-name").textContent = "No spells";
+			const classSpellsTab = clone.querySelector("#tabClassSpells");
+			classSpellsTab.appendChild(newSpellsEntry);
+		}
+		else
+		{
+			tabButtonsContainer.innerHTML = ``;
+
+			data.spell_casters.forEach(spellCaster => {
+				renderCasterSpells(clone, spellCaster);
+			});
+
+			if (data.focus.length != 0)
+			{
+				const focusTab = clone.querySelector("#tabFocusSpells");
+				const focusTemplate = focusTab.querySelector("#focusSpellsListByLevel");
+				
+				// создаём список, в который будем вставлять все <li>
+				const ul = document.createElement("ul");
+				ul.classList.add("list-group", "mt-2");
+				
+				if (data.focus.length != 0)
+				{
+					const button = document.createElement("button");
+					button.classList.add("button-tab", "inactive");
+					button.dataset.tab = `tabFocusSpells`; // уникальный tab ID
+					button.textContent = "Focus";
+
+					tabButtonsContainer.appendChild(button);
+				}
+				// проходим по всем традициям
+				Object.entries(data.focus).forEach(([tradition, abilities], focus) => {
+					
+				Object.entries(abilities).forEach(([ability, details]) => {
+					// заголовок для блока
+					const header = document.createElement("li");
+					header.classList.add("list-group-item", "text-info", "bg-light", "font-weight-bold");
+					header.textContent = `${tradition.toUpperCase()} (${ability.toUpperCase()})`;
+					ul.appendChild(header);
+				
+					// focus cantrips
+					(details.focusCantrips || []).forEach(spell => {
+					const li = focusTemplate.content.cloneNode(true);
+					li.querySelector("li").textContent = `${spell} (Cantrip)`;
+					ul.appendChild(li);
+					});
+				
+					// focus spells
+					(details.focusSpells || []).forEach(spell => {
+					const li = focusTemplate.content.cloneNode(true);
+					li.querySelector("li").textContent = spell;
+					ul.appendChild(li);
+					});
+				});
+				});
+				
+				// вставляем в tabFocusSpells
+				focusTab.innerHTML = ""; // очистим старое
+				focusTab.appendChild(ul);
+			}
+		}
+
 		// Вставляем в DOM
 		app.innerHTML = "";
 		app.appendChild(clone);
@@ -419,6 +490,11 @@
 					openFeatModal(data.description);
 			});
 		});
+
+		setupTabs(app.querySelector("#spellsScreen"));
+		
+		//spells
+
 	});
 	
 	// HP modification modal
@@ -533,3 +609,103 @@
 
 		  return newItem;
 	}
+	  
+
+	function setupTabs(container) {
+		const tabButtons = container.querySelectorAll('.button-tab');
+		const tabContents = container.querySelectorAll('.tab-content');
+	  
+		tabButtons.forEach(button => {
+		  button.addEventListener('click', () => {
+			const tabId = button.dataset.tab;
+	  
+			// Скрыть все табы внутри контейнера
+			tabContents.forEach(content => {
+			  content.style.display = 'none';
+			});
+	  
+			// Показать выбранный таб
+			const selectedTab = container.querySelector(`#${tabId}`);
+			if (selectedTab) {
+			  selectedTab.style.display = 'block';
+			}
+	  
+			// Сбросить состояния кнопок
+			tabButtons.forEach(btn => {
+			  btn.classList.add('inactive');
+			});
+	  
+			// Активировать текущую кнопку
+			button.classList.remove('inactive');
+		  });
+		});
+	  
+		// При инициализации активируем первую кнопку, если есть
+		if (tabButtons.length > 0) {
+		  tabButtons[0].click();
+		}
+	  }
+
+	function renderCasterSpells(clone, spellCaster) {
+		const tabButtonsContainer = clone.querySelector("#tabButtons");
+		const tabContentsContainer = clone.querySelector("#tab-contents");
+		const tabSpellsTemplate = clone.querySelector("#tabSpellsCategory");
+	  
+		if (!tabButtonsContainer || !tabContentsContainer || !tabSpellsTemplate) {
+		  console.warn("One or more required elements not found in clone");
+		  return;
+		}
+	  
+		const safeName = spellCaster.name.replace(/\s+/g, "_"); 
+
+		// 1. Создаём кнопку
+		const button = document.createElement("button");
+		button.classList.add("button-tab", "inactive");
+		const tabId = `tabCaster_${safeName}`;
+		button.dataset.tab = tabId;
+		button.textContent = spellCaster.name;
+		tabButtonsContainer.appendChild(button);
+	  
+		// 2. Создаём вкладку
+		const casterTab = document.createElement("div");
+		casterTab.id = `tabCaster_${safeName}`;
+		console.log(casterTab.id);
+		casterTab.classList.add("tab-content");
+		casterTab.style.display = "none";
+		tabContentsContainer.appendChild(casterTab);
+	  
+		// 3. Для каждого уровня создаём блок
+		spellCaster.spells.forEach(spellLevelData => {
+			const newLevelBlock = tabSpellsTemplate.content.cloneNode(true);
+			console.log(spellLevelData);
+			// Правим Level X на реальный уровень
+			const levelDiv = newLevelBlock.querySelector(".cast-level");
+			if (levelDiv) {
+			  levelDiv.textContent = `Level ${spellLevelData.spellLevel}`;
+			}
+		
+			// Удаляем пустой образец <li>
+			const ul = newLevelBlock.querySelector("ul.list-group");
+			const sampleLi = ul?.querySelector(".spells-list");
+			if (sampleLi) sampleLi.remove();
+		
+			// Добавляем заклинания
+			if (Array.isArray(spellLevelData.list)) {
+			  spellLevelData.list.forEach(spellName => {
+				const li = document.createElement("li");
+				li.classList.add("list-group-item", "d-flex", "flex-row", "justify-content-between");
+		
+				const spellNameDiv = document.createElement("div");
+				spellNameDiv.classList.add("text-info", "font-weight-bold", "spell-name");
+				spellNameDiv.textContent = spellName;
+		
+				li.appendChild(spellNameDiv);
+				ul?.appendChild(li);
+			  });
+			}
+		
+			// Кладём уровень внутрь вкладки кастера
+			casterTab.appendChild(newLevelBlock);
+		});
+	  }
+	  

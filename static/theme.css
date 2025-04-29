@@ -1511,3 +1511,29 @@ table {
   margin: 0.2em;
 }
 
+.button-tab {
+  display: inline-block;
+  background-color: #023f68;
+  color: #c0c0c0;
+  padding: 0.2em 0.6em;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin: 0.2em;
+  border: none;    
+  outline: none; /* ← убирает обводку при фокусе */
+}
+
+.button-tab.inactive {
+  color: #2b3a44;
+  background-color: #808080;
+  padding: 0.2em 0.6em;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin: 0.2em;
+}
+
+.tab-content {
+  padding: 1rem;
+  margin-top: 0.5rem;
+}
+

@@ -234,14 +234,12 @@
       </div>
       <div class="screen d-flex flex-column align-items-center" id="spellsScreen">
 		<div id="tabButtons" style="margin-top: 1rem;">
-			<button data-tab="tabClassSpells" class="button-tab">Spells</button>
 		</div>
 		<div id="tab-contents">
 			<template id="tabSpellsCategory">
 				<div class="spell-block">
-				  <div class="cast-level text-info" style="margin-top: 1rem;">Level X</div>
-				  <ul class="list-group">
-					<li class="spells-list"></li>
+				  <div class="cast-level text-info" style="margin-top: 1rem;"></div>
+				  <ul class="list-group spells-list">
 				  </ul>
 				</div>
 			  </template>
@@ -283,6 +281,13 @@
     <div id="featModalText" class="text-info">Loading description...</div>
   </div>
 </div>
+
+<div id="spellInfoModal" class="modal hidden">
+	<div class="modal-content">
+	  <span class="close">&times;</span>
+	  <div id="spellModalText" class="text-info">Loading description...</div>
+	</div>
+  </div>
 
 <script src="{{ url_for('static', filename='character_sheet.js') }}"></script>
 </body>

@@ -9,6 +9,8 @@ feats_index_file = os.path.join(feats_dir, "feat_index.json")
 equipment_dir = os.path.join(base_dir, "data/equipment")
 equipment_index_file = os.path.join(equipment_dir, "equipment_index.json")
 
+spells_dir = os.path.join(base_dir, "data/spells")
+spells_index_file = os.path.join(spells_dir, "spells_index.json")
 
 def get_feat_description(feat_name):
     feat_info = ["N/A", "N/A", "N/A"]
@@ -44,7 +46,7 @@ def get_weapon_flairs(weapon):
             weapon_filename = index.get(weapon)
         if weapon_filename:
             with open(os.path.join(equipment_dir, weapon_filename), "r") as weapon_file:
-                weapon_flairs = json.load(weapon_file).get("system", {}).get("traits", {}).get("value", [])
+                weapon_flairs = json.load(weapon_file).get("system", {}).get("traits", {}).get("value", "")
     except Exception as exc:
         print("Error while reading weapons database: ", str(exc))
 
@@ -60,12 +62,40 @@ def get_armor_details(armor):
         if armor_filename:
             with open(os.path.join(equipment_dir, armor_filename), "r") as armor_file:
                 armor_data = json.load(armor_file)
-                armor_details['acBonus'] = armor_data.get("system", {}).get("acBonus", {})
-                armor_details["dexCap"] = armor_data.get("system", {}).get("dexCap", {})
-                armor_details["checkPenalty"] = armor_data.get("system", {}).get("checkPenalty", {})
-                armor_details["strength"] = armor_data.get("system", {}).get("strength", {})
-                armor_details["speedPenalty"] = armor_data.get("system", {}).get("speedPenalty", {})
+                armor_details['acBonus'] = armor_data.get("system", {}).get("acBonus", "")
+                armor_details["dexCap"] = armor_data.get("system", {}).get("dexCap", "")
+                armor_details["checkPenalty"] = armor_data.get("system", {}).get("checkPenalty", "")
+                armor_details["strength"] = armor_data.get("system", {}).get("strength", "")
+                armor_details["speedPenalty"] = armor_data.get("system", {}).get("speedPenalty", "")
     except Exception as exc:
         print("Error while reading armor database: ", str(exc))
 
     return armor_details
+
+def get_spell_description(spell):
+    spell_description = {
+        "description": "N/A",
+        "traditions": [],
+        "cast": "N/A",
+        "range": "",
+        "duration": "",
+        "flairs": ""
+    }
+    spell_filename = None
+    try:
+        with open(spells_index_file, "r") as index_file:
+            index = json.load(index_file)
+            spell_filename = index.get(spell)
+        if spell_filename:
+            with open(os.path.join(spells_dir, spell_filename), "r") as spell_file:
+                spell_data = json.load(spell_file)
+                spell_description["description"] = spell_data.get("system", {}).get("description", {}).get("value", "")
+                spell_description["tradition"] = spell_data.get("system", {}).get("traits", {}).get("traditions", "")
+                spell_description["cast"] = spell_data.get("system", {}).get("time", {}).get("value", "")
+                spell_description["range"] = spell_data.get("system", {}).get("range", {}).get("value", "")
+                spell_description["duration"] = spell_data.get("system", {}).get("duration", {}).get("value", "")
+                spell_description["flairs"] = spell_data.get("system", {}).get("traits", {}).get("value", "")
+    except Exception as exc:
+        print("Error while reading spell database: ", str(exc))
+
+    return spell_description

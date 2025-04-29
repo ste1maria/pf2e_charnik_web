@@ -33,22 +33,22 @@
 		// basic abilities
 		clone.querySelector("#fortitude").innerHTML =
 		`<div class="icon-row">
-		<span class="icon-prof ${getProficiencyLevel(data.proficiencies["fortitude"], data.level)}"> </span>
+		<span class="icon-prof ${getSkillProficiency(data.proficiencies["fortitude"])}"> </span>
 		Fortitude: +${data.fortitude}
 		</div>`;
 		clone.querySelector("#reflex").innerHTML =
 		`<div class="icon-row">
-		<span class="icon-prof ${getProficiencyLevel(data.proficiencies["reflex"], data.level)}"> </span>
+		<span class="icon-prof ${getSkillProficiency(data.proficiencies["reflex"])}"> </span>
 		Reflex: +${data.reflex}
 		</div>`;
 		clone.querySelector("#will").innerHTML =
 		`<div class="icon-row">
-		<span class="icon-prof ${getProficiencyLevel(data.proficiencies["will"], data.level)}"> </span>
+		<span class="icon-prof ${getSkillProficiency(data.proficiencies["will"])}"> </span>
 		Will: +${data.will}
 		</div>`;
 		clone.querySelector("#perception").innerHTML =
 		`<div class="icon-row">
-		<span class="icon-prof ${getProficiencyLevel(data.proficiencies["perception"], data.level)}"> </span>
+		<span class="icon-prof ${getSkillProficiency(data.proficiencies["perception"])}"> </span>
 		Perception: +${data.perception}
 		</div>`;
 
@@ -86,7 +86,7 @@
 		+${data.skills["deception"]} <span class="icon-prof ${getSkillProficiency(data.proficiencies["deception"])}"></span>
 		`;
 		clone.querySelector("#modifierDiplomacy").innerHTML = `
-		+${data.skills["diplomacy"]} <span class="icon-prof ${getSkillProficiency(data.proficiencies["dimplomacy"])}"></span>
+		+${data.skills["diplomacy"]} <span class="icon-prof ${getSkillProficiency(data.proficiencies["diplomacy"])}"></span>
 		`;
 		clone.querySelector("#modifierIntimidation").innerHTML = `
 		+${data.skills["intimidation"]} <span class="icon-prof ${getSkillProficiency(data.proficiencies["intimidation"])}"></span>
@@ -322,23 +322,40 @@
 		`;
 
 		// spells
-		const tabSpellsTemplate = clone.querySelector("#tabSpellsCategory");
 		const tabButtonsContainer = clone.querySelector("#tabButtons");
 		const tabContentsContainer = clone.querySelector("#tab-contents");
+		const tabSpellsTemplate = clone.querySelector("#tabSpellsCategory");
 
-		if (data.spell_casters.length === 0)
+		if (data.spell_casters.length == 0)
 		{
-			const newSpellsEntry = classSpellsTemplate.content.cloneNode(true);
-			newSpellsEntry.querySelector(".spell-name").textContent = "No spells";
-			const classSpellsTab = clone.querySelector("#tabClassSpells");
-			classSpellsTab.appendChild(newSpellsEntry);
+			const casterTab = document.createElement("div");
+			casterTab.id = `tabNoSpells`;
+			casterTab.classList.add("tab-content");
+			tabContentsContainer.appendChild(casterTab);
+	  
+			// 3. Для каждого уровня создаём блок
+			const noSpellsLabel = tabSpellsTemplate.content.cloneNode(true);
+			const ul = noSpellsLabel.querySelector("ul.list-group");
+
+			const li = document.createElement("li");
+			li.classList.add("list-group-item", "d-flex", "flex-row", "justify-content-between");
+	
+			const spellNameDiv = document.createElement("div");
+			spellNameDiv.classList.add("text-info", "font-weight-bold", "spell-name");
+			spellNameDiv.textContent = "No spells!";
+	
+			li.appendChild(spellNameDiv);
+			ul?.appendChild(li);
+		
+			// Кладём уровень внутрь вкладки кастера
+			casterTab.appendChild(noSpellsLabel);
 		}
 		else
 		{
 			tabButtonsContainer.innerHTML = ``;
 
 			data.spell_casters.forEach(spellCaster => {
-				renderCasterSpells(clone, spellCaster);
+				renderCasterSpells(clone, spellCaster, (data.cha + spellCaster.proficiency + data.level));
 			});
 
 			if (data.focus.length != 0)
@@ -492,9 +509,21 @@
 		});
 
 		setupTabs(app.querySelector("#spellsScreen"));
-		
-		//spells
 
+		app.querySelector(".spell-entry").addEventListener("click", (e) => {
+			const li = e.target.closest("li.list-group-item");
+			if (!li) return;
+
+			const spellNameEl = li.querySelector(".spell-name");
+			if (!spellNameEl) return;
+
+			const spellName = spellNameEl.textContent.trim();
+			fetch(`/get_spell_description?spell_name=${encodeURIComponent(spellName)}`)
+				.then(res => res.json())
+				.then(data => {
+					openSpellModal(data);
+			});
+		});
 	});
 	
 	// HP modification modal
@@ -567,6 +596,16 @@
 	closeFeatModal.addEventListener("click", () => {
 		featModal.style.display = "none";
 	});
+
+	const spellModal = document.getElementById("spellInfoModal");
+	const spellModalText = document.getElementById("spellModalText");
+	const closeSpellModal = document.querySelector("#spellInfoModal .close");
+
+	// spell description modal
+	function openSpellModal(spell)
+	{
+
+	}
 
 	// helper functions
 	function getProficiencyLevel(ability, level) {
@@ -646,7 +685,7 @@
 		}
 	  }
 
-	function renderCasterSpells(clone, spellCaster) {
+	function renderCasterSpells(clone, spellCaster, spellDc) {
 		const tabButtonsContainer = clone.querySelector("#tabButtons");
 		const tabContentsContainer = clone.querySelector("#tab-contents");
 		const tabSpellsTemplate = clone.querySelector("#tabSpellsCategory");
@@ -674,10 +713,18 @@
 		casterTab.style.display = "none";
 		tabContentsContainer.appendChild(casterTab);
 	  
+		// DC for spell/attack
+		const spellDcBlock = tabSpellsTemplate.content.cloneNode(true);
+		const ul = spellDcBlock.querySelector("ul.list-group");
+		const li = document.createElement("li");
+		li.classList.add("text-info", "font-weight-bold", "list-group-item");
+		li.innerHTML = `Spell attack: + ${spellDc} <span class="icon-prof ${getSkillProficiency(spellCaster.proficiency)}"></span>`;
+		ul?.appendChild(li);
+		casterTab.appendChild(spellDcBlock);
+
 		// 3. Для каждого уровня создаём блок
 		spellCaster.spells.forEach(spellLevelData => {
 			const newLevelBlock = tabSpellsTemplate.content.cloneNode(true);
-			console.log(spellLevelData);
 			// Правим Level X на реальный уровень
 			const levelDiv = newLevelBlock.querySelector(".cast-level");
 			if (levelDiv) {
@@ -686,14 +733,12 @@
 		
 			// Удаляем пустой образец <li>
 			const ul = newLevelBlock.querySelector("ul.list-group");
-			const sampleLi = ul?.querySelector(".spells-list");
-			if (sampleLi) sampleLi.remove();
 		
 			// Добавляем заклинания
 			if (Array.isArray(spellLevelData.list)) {
 			  spellLevelData.list.forEach(spellName => {
 				const li = document.createElement("li");
-				li.classList.add("list-group-item", "d-flex", "flex-row", "justify-content-between");
+				li.classList.add("list-group-item", "d-flex", "flex-row", "justify-content-between", "spell-entry");
 		
 				const spellNameDiv = document.createElement("div");
 				spellNameDiv.classList.add("text-info", "font-weight-bold", "spell-name");

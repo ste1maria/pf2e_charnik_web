@@ -12,6 +12,9 @@ equipment_index = {}
 bare_class_feats = os.path.join(base_dir, "data/classfeatures")
 sorted_class_feats = os.path.join(feat_dir, "class")
 
+spells_dir = os.path.join(base_dir, "data/spells")
+spells_index = {}
+
 
 def clean_uuid_in_dict(data, target_key):
     # Если data — это словарь
@@ -127,5 +130,49 @@ def clean_up_json_feats():
             except Exception as e:
                 print(f'Exception handling json {filename}: {e}')
 
+
+def create_spells_index():
+    for root, dirs, files in os.walk(spells_dir):
+        for filename in files:
+            if not filename.endswith(".json"):
+                continue
+            filepath = os.path.join(root, filename)
+            delete_file = False
+            name = None
+            try:
+                with open(filepath, 'r', encoding="utf-8") as f:
+                    data = json.load(f)
+                    if data["system"]["traits"]["rarity"] not in ["common", "uncommon"]:
+                        delete_file = True
+                    else:
+                        name = data.get("name")
+                if delete_file:
+                    os.remove(filepath)
+                    print("deleted", filepath)
+                elif name:
+                    spells_index[name] = os.path.relpath(filepath, spells_dir)
+
+            except Exception as e:
+                print(f"Error in file {filepath}: {e}")
+
+    with open (os.path.join(spells_dir, "spells_index.json"), "w") as output:
+        json.dump(spells_index, output, indent=4 )
+
+def clean_up_json_spells():
+    for root, dirs, files in os.walk(spells_dir):
+        for filename in files:
+            if not filename.endswith(".json"):
+                continue
+            filepath = os.path.join(root, filename)
+            try:
+                with open(filepath, 'r', encoding="utf-8") as f:
+                    data = json.load(f)
+                    cleaned_data = clean_uuid_in_dict(data, "value")
+                with open(filepath, 'w', encoding="utf-8") as f:
+                    json.dump(cleaned_data, f, ensure_ascii=False, indent=2)
+            except Exception as e:
+                print(f'Exception handling json {filename}: {e}')
+
+
 if __name__ == "__main__":
-    create_feats_index()
+    clean_up_json_spells()

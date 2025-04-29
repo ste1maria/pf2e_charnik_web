@@ -510,20 +510,22 @@
 
 		setupTabs(app.querySelector("#spellsScreen"));
 
-		app.querySelector(".spell-entry").addEventListener("click", (e) => {
-			const li = e.target.closest("li.list-group-item");
-			if (!li) return;
-
-			const spellNameEl = li.querySelector(".spell-name");
-			if (!spellNameEl) return;
-
-			const spellName = spellNameEl.textContent.trim();
-			fetch(`/get_spell_description?spell_name=${encodeURIComponent(spellName)}`)
+		app.querySelectorAll(".spells-list").forEach(spellsList => {
+			spellsList.addEventListener("click", (e) => {
+			  const li = e.target.closest("li.list-group-item");
+			  if (!li) return;
+		  
+			  const spellNameEl = li.querySelector(".spell-name");
+			  if (!spellNameEl) return;
+		  
+			  const spellName = spellNameEl.textContent.trim();
+			  fetch(`/get_spell_description?spell_name=${encodeURIComponent(spellName)}`)
 				.then(res => res.json())
 				.then(data => {
-					openSpellModal(data);
+				  openSpellModal(spellName, data);
+				});
 			});
-		});
+		  });
 	});
 	
 	// HP modification modal
@@ -553,6 +555,9 @@
 		}
 		if (event.target === featModal) {
 			featModal.style.display = "none";
+		}
+		if (event.target === spellModal) {
+			spellModal.style.display = "none";
 		}
 	});
 
@@ -598,14 +603,56 @@
 	});
 
 	const spellModal = document.getElementById("spellInfoModal");
-	const spellModalText = document.getElementById("spellModalText");
 	const closeSpellModal = document.querySelector("#spellInfoModal .close");
 
 	// spell description modal
-	function openSpellModal(spell)
+	function openSpellModal(spellName, spellDescr)
 	{
+		document.getElementById("spellNameModal").innerText = `${spellName}`;
 
+		const spellParameters = document.getElementById("spellParameters");
+		const spellFlairs = document.getElementById("spellFlairs");
+		spellParameters.innerHTML = ``;
+		spellFlairs.innerHTML = ``;
+
+		if (spellDescr.traditions.length > 0)
+		{
+			spellParameters.innerHTML += `Traditions: &nbsp <span class="text-info">${spellDescr.traditions.join(", ")}</span> <br>`
+		}
+		if (spellDescr.cast.length > 0)
+		{
+			spellParameters.innerHTML += `Actions: &nbsp <span class="text-info">${spellDescr.cast}</span><br>`
+		}
+		if (spellDescr.range.length > 0)
+		{
+			spellParameters.innerHTML += `Range: &nbsp <span class="text-info">${spellDescr.range}</span><br>`
+		}
+		if (spellDescr.duration.length > 0)
+		{
+			spellParameters.innerHTML += `Duration: &nbsp <span class="text-info">${spellDescr.duration}</span><br>`
+		}
+
+
+		if (spellDescr.flairs.length > 0)
+		{
+			spellDescr.flairs.forEach(flair => {
+				const tag = document.createElement("div");
+				tag.textContent = flair;
+				tag.classList.add("flair-tag"); // кастомный стиль
+				spellFlairs.appendChild(tag);
+			});
+		}
+
+		const spellDescription = document.getElementById("spellDescription");
+		spellDescription.innerHTML = spellDescr.description;
+
+		spellModal.style.display = "block";
+		spellModal.classList.remove("hidden");
 	}
+
+	closeSpellModal.addEventListener("click", () => {
+		spellModal.style.display = "none";
+	});
 
 	// helper functions
 	function getProficiencyLevel(ability, level) {
@@ -708,7 +755,6 @@
 		// 2. Создаём вкладку
 		const casterTab = document.createElement("div");
 		casterTab.id = `tabCaster_${safeName}`;
-		console.log(casterTab.id);
 		casterTab.classList.add("tab-content");
 		casterTab.style.display = "none";
 		tabContentsContainer.appendChild(casterTab);

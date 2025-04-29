@@ -90,7 +90,7 @@ def get_spell_description(spell):
             with open(os.path.join(spells_dir, spell_filename), "r") as spell_file:
                 spell_data = json.load(spell_file)
                 spell_description["description"] = spell_data.get("system", {}).get("description", {}).get("value", "")
-                spell_description["tradition"] = spell_data.get("system", {}).get("traits", {}).get("traditions", "")
+                spell_description["traditions"] = spell_data.get("system", {}).get("traits", {}).get("traditions", [])
                 spell_description["cast"] = spell_data.get("system", {}).get("time", {}).get("value", "")
                 spell_description["range"] = spell_data.get("system", {}).get("range", {}).get("value", "")
                 spell_description["duration"] = spell_data.get("system", {}).get("duration", {}).get("value", "")

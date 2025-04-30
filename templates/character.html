@@ -43,22 +43,20 @@
 
   <div class="screen-container">
     <div class="screen-track" id="screenTrack">
-      <div class="screen justify-content-center" id="statsScreen">
-		<div class="row text-info flex-column align-items-center justify-content-center  row-with-border" id="backgroundRow">
-			     <div class="table-wrapper w-100">
-					<table class="table text-center mx-auto table-bordered">
-					  <tr>
-						<th class="font-weight-bold text-center">Ancestry</th>
-						<th class="font-weight-bold text-center">Background </th>
-						<th class="font-weight-bold text-center">Class</th>
-					  </tr>
-					  <tr>
-						<td id="ancestryCell"></td>
-						<td id="backgroundCell"></td>
-						<td id="classCell"></td>
-					  </tr>
-					</table>
-				</div>
+      <div class="screen d-flex flex-column" id="statsScreen">
+		<div class="row-ancestry text-info text-wrap justify-content-around" id="backgroundRow">
+				  <div class="flex-column mb-1 w-25">
+					<div style="font-weight: bold;">Ancestry</div>
+					<div class="flex-column cell-wrap" id="ancestryCell"></div>
+				  </div>
+				  <div class="flex-column mb-1 w-25">
+					<div style="font-weight: bold;">Background</div>
+					<div class="flex-column cell-wrap" id="backgroundCell"></div>
+				  </div>
+				  <div class="flex-column mb-1 w-25">
+					<div style="font-weight: bold;">Class</div>
+					<div class="flex-column cell-wrap" id="classCell"></div>
+				  </div>
 		</div>
          <div class="row text-info row-with-border" id="sizeSpeedRow">
 			<div class="table-wrapper w-100">
@@ -209,10 +207,14 @@
 		<ul class="list-group text-info mt-2" id="armorSection">
 			<template id="armorTemplate">
 				<li class="list-group-item d-flex flex-row justify-content-between">
-					<div class="text-info font-weight-bold armor-name" id="armorName"></div>
-					<div class="text-info" id="armorAC"></div>
-					<div class="text-info" id="armorDexCap"></div>
-					<div class="text-info" id="armorCheckPenalty"></div>
+					<div class="d-flex flex-column">
+						<div class="text-info font-weight-bold armor-name " id="armorName"></div>
+						<div>
+							<div class="text-info" id="armorAC"></div>
+							<div class="text-info" id="armorDexCap"></div>
+							<div class="text-info" id="armorCheckPenalty"></div>
+						</div>
+					</div>
 					<div id="armorProficiencyIcon"></div>
 				</li>
 			</template>
@@ -287,7 +289,7 @@
 	  <span class="close">&times;</span>
 		<h4 id="spellNameModal" class="text-info"></h4>
 		<div id="spellParameters" class="text-left"></div>
-		<div id="spellFlairs" class="d-flex flex-row"></div>
+		<div id="spellFlairs" class="spell-flair-row mt-1"></div>
 		<div id="spellDescription" class="text-info text-left mt-1"></div>
 	</div>
   </div>

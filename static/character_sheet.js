@@ -53,7 +53,7 @@
 		</div>`;
 
 		// character background
-		clone.querySelector("#ancestryCell").textContent = data.ancestry + "\n" + data.heritage;
+		clone.querySelector("#ancestryCell").innerHTML = `<div>${data.ancestry}</div> <div>${data.heritage}</div>`;
 		clone.querySelector("#backgroundCell").textContent = data.background;
 		clone.querySelector("#classCell").textContent = data.char_class;
 
@@ -289,9 +289,9 @@
 					fetch(`/get_armor_data?armor_name=${encodeURIComponent(armor.name)}`)
 					.then(res => res.json())
 					.then(data => {
-						armorAcEl.innerHTML = `AC:<br>${data.acBonus}`;
-						dexCapEl.innerHTML = `Dex Cap:<br>${data.dexCap}`;
-						checkPenaltyEl.innerHTML = `Check penalty:<br>${data.checkPenalty}`;
+						armorAcEl.innerHTML = `AC:&nbsp${data.acBonus}`;
+						dexCapEl.innerHTML = `Dex Cap:&nbsp${data.dexCap}`;
+						checkPenaltyEl.innerHTML = `Check penalty:&nbsp${data.checkPenalty}`;
 					});
 					
 
@@ -638,7 +638,7 @@
 			spellDescr.flairs.forEach(flair => {
 				const tag = document.createElement("div");
 				tag.textContent = flair;
-				tag.classList.add("flair-tag"); // кастомный стиль
+				tag.classList.add("flair-spell"); // кастомный стиль
 				spellFlairs.appendChild(tag);
 			});
 		}

@@ -1311,6 +1311,11 @@ td {
      width: 25% !important;
  }
 
+ .w-30
+ {
+     width: 20% !important;
+ }
+
  .w-100
  {
      width: 100% !important };
@@ -1520,7 +1525,25 @@ table {
   border-radius: 8px;
   font-size: 0.85rem;
   margin: 0.2em;
+  flex-direction: row; 
 }
+
+.flair-spell
+{
+  background-color: #023f68;
+  color: #c0c0c0;
+  padding: 0.2em 0.6em;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin: 0.2em;
+}
+
+.spell-flair-row
+{
+  display: flex;
+  flex-wrap: wrap;
+}
+
 
 .button-tab {
   display: inline-block;
@@ -1548,3 +1571,16 @@ table {
   margin-top: 0.5rem;
 }
 
+.row-ancestry {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  text-align: center;
+  border-bottom: 1px solid #494949;
+  margin-top: 2rem;
+}
+
+.cell-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}

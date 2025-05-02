@@ -1500,8 +1500,14 @@ table {
 .dots {
   display: flex;
   justify-content: center;
-  margin-top: 0.5rem;
+  margin: 0 auto;
   gap: 0.5rem;
+  z-index: 10;
+  max-width: 100%;
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .dot {
@@ -1583,4 +1589,20 @@ table {
 .cell-wrap {
   display: flex;
   flex-wrap: wrap;
+}
+
+input[type="checkbox"] {
+  appearance: none;    /* работает в Chrome, Safari */
+  -moz-appearance: none; /* нужно для Firefox */
+  width: 20px;
+  height: 20px;
+  border: 2px solid gray;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  display: inline-block;
+}
+
+input[type="checkbox"]:checked {
+  background-color: rgb(255, 72, 0);
 }

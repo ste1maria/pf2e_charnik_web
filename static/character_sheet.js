@@ -1,4 +1,13 @@
 
+
+	document.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
+		cb.addEventListener('click', function() {
+			cb.checked = !cb.checked; // вручную переключаем состояние
+			console.log('Смена состояния', cb.id, cb.checked);
+			localStorage.setItem('checkbox_' + cb.id, cb.checked);
+		  });
+	});
+
 	// Получаем char_id из URL
 	const params = new URLSearchParams(window.location.search);
 	const characterId = params.get("char_id");
@@ -9,6 +18,8 @@
 	  .then(data => {
 		renderCharacter(data);
 	  });
+
+
 
 	function getQueryParam(name) {
 	const url = new URL(window.location.href);
@@ -379,38 +390,53 @@
 				// проходим по всем традициям
 				Object.entries(data.focus).forEach(([tradition, abilities], focus) => {
 					
-				Object.entries(abilities).forEach(([ability, details]) => {
-					// заголовок для блока
-					const header = document.createElement("li");
-					header.classList.add("list-group-item", "text-info", "bg-light", "font-weight-bold");
-					header.textContent = `${tradition.toUpperCase()} (${ability.toUpperCase()})`;
-					ul.appendChild(header);
-				
-					// focus cantrips
-					(details.focusCantrips || []).forEach(spell => {
-					const li = focusTemplate.content.cloneNode(true);
-					li.querySelector("li").textContent = `${spell} (Cantrip)`;
-					ul.appendChild(li);
+					Object.entries(abilities).forEach(([ability, details]) => {
+						// заголовок для блока
+						const header = document.createElement("li");
+						header.classList.add("list-group-item", "text-info", "bg-light", "font-weight-bold");
+						header.textContent = `${tradition.toUpperCase()} (${ability.toUpperCase()})`;
+						ul.appendChild(header);
+					
+						// focus cantrips
+						(details.focusCantrips || []).forEach(spell => {
+							const li = focusTemplate.content.cloneNode(true);
+							li.querySelector("li").textContent = `${spell}`;
+							ul.appendChild(li);
+						});
+					
+						// focus spells
+						(details.focusSpells || []).forEach(spell => {
+							const li = focusTemplate.content.cloneNode(true);
+							li.querySelector("li").textContent = spell;
+							ul.appendChild(li);
+						});
 					});
-				
-					// focus spells
-					(details.focusSpells || []).forEach(spell => {
-					const li = focusTemplate.content.cloneNode(true);
-					li.querySelector("li").textContent = spell;
-					ul.appendChild(li);
-					});
-				});
 				});
 				
 				// вставляем в tabFocusSpells
 				focusTab.innerHTML = ""; // очистим старое
 				focusTab.appendChild(ul);
+
+				// ВЕШАЕМ обработчик
+				ul.addEventListener("click", (e) => {
+					const li = e.target.closest("li.list-group-item");
+					if (!li || !ul.contains(li)) return;
+
+					const focusName = li.textContent.trim();
+					console.log(`Клик по: ${focusName}`);
+					fetch(`/get_spell_description?spell_name=${encodeURIComponent(focusName)}`)
+					  .then(res => res.json())
+					  .then(data => {
+						openSpellModal(focusName, data);
+					});
+				});
 			}
 		}
 
 		// Вставляем в DOM
 		app.innerHTML = "";
 		app.appendChild(clone);
+		setupCheckboxes();
 		
 		const event = new CustomEvent("characterRendered");
 		app.dispatchEvent(event);
@@ -526,6 +552,8 @@
 				});
 			});
 		  });
+
+
 	});
 	
 	// HP modification modal
@@ -799,4 +827,19 @@
 			casterTab.appendChild(newLevelBlock);
 		});
 	  }
-	  
+
+	function setupCheckboxes() {
+		document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+			const id = cb.id;
+			if (!id) return;
+
+			const saved = localStorage.getItem('checkbox_' + id);
+				if (saved !== null) {
+				cb.checked = saved === 'true';
+			}
+
+			cb.addEventListener('change', function() {
+				localStorage.setItem('checkbox_' + id, cb.checked);
+			});
+		});
+	}

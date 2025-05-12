@@ -373,65 +373,112 @@
 			{
 				const focusTab = clone.querySelector("#tabFocusSpells");
 				const focusTemplate = focusTab.querySelector("#focusSpellsListByLevel");
-				
-				// создаём список, в который будем вставлять все <li>
-				const ul = document.createElement("ul");
-				ul.classList.add("list-group", "mt-2");
-				
-				if (data.focus.length != 0)
-				{
-					const button = document.createElement("button");
-					button.classList.add("button-tab", "inactive");
-					button.dataset.tab = `tabFocusSpells`; // уникальный tab ID
-					button.textContent = "Focus";
 
-					tabButtonsContainer.appendChild(button);
-				}
+				focusTab.innerHTML = ""; // очистим старое
+
+				const button = document.createElement("button");
+				button.classList.add("button-tab", "inactive");
+				button.dataset.tab = `tabFocusSpells`; // уникальный tab ID
+				button.textContent = "Focus";
+
+				tabButtonsContainer.appendChild(button);
+
 				// проходим по всем традициям
 				Object.entries(data.focus).forEach(([tradition, abilities], focus) => {
 					
 					Object.entries(abilities).forEach(([ability, details]) => {
 						// заголовок для блока
+						// создаём список, в который будем вставлять все <li>
+						const ul = document.createElement("ul");
+						ul.classList.add("list-group", "mt-2");
 						const header = document.createElement("li");
 						header.classList.add("list-group-item", "text-info", "bg-light", "font-weight-bold");
 						header.textContent = `${tradition.toUpperCase()} (${ability.toUpperCase()})`;
 						ul.appendChild(header);
-					
+						
+						const ulCantrips = document.createElement("ul");
+						ulCantrips.classList.add("list-group", "mt-2");
+
+						const ulSpells = document.createElement("ul");
+						ulSpells.classList.add("list-group", "mt-2");
+
 						// focus cantrips
-						(details.focusCantrips || []).forEach(spell => {
-							const li = focusTemplate.content.cloneNode(true);
-							li.querySelector("li").textContent = `${spell}`;
-							ul.appendChild(li);
+						(details.focusCantrips || []).forEach(cantrip => {
+							const li = document.createElement("li");
+							li.classList.add("list-group-item", "d-flex", "flex-row", "justify-content-between", "spell-entry");
+
+							const cantripNameDiv = document.createElement("div");
+							cantripNameDiv.classList.add("text-info", "font-weight-bold", "spell-name");
+							cantripNameDiv.textContent = cantrip;
+					
+							li.appendChild(cantripNameDiv);
+							ulCantrips?.appendChild(li);
+			
 						});
 					
 						// focus spells
 						(details.focusSpells || []).forEach(spell => {
-							const li = focusTemplate.content.cloneNode(true);
-							li.querySelector("li").textContent = spell;
-							ul.appendChild(li);
+							const li = document.createElement("li");
+							li.classList.add("list-group-item", "d-flex", "flex-row", "justify-content-between", "spell-entry");
+
+							const spellNameDiv = document.createElement("div");
+							spellNameDiv.classList.add("text-info", "font-weight-bold", "spell-name");
+							spellNameDiv.textContent = spell;
+					
+							li.appendChild(spellNameDiv);
+							ulSpells?.appendChild(li);
 						});
+
+
+
+						focusTab.appendChild(ul);
+						focusTab.appendChild(ulCantrips);
+						focusTab.appendChild(ulSpells);
+						
 					});
 				});
 				
 				// вставляем в tabFocusSpells
-				focusTab.innerHTML = ""; // очистим старое
-				focusTab.appendChild(ul);
-
-				// ВЕШАЕМ обработчик
-				ul.addEventListener("click", (e) => {
-					const li = e.target.closest("li.list-group-item");
-					if (!li || !ul.contains(li)) return;
-
-					const focusName = li.textContent.trim();
-					console.log(`Клик по: ${focusName}`);
-					fetch(`/get_spell_description?spell_name=${encodeURIComponent(focusName)}`)
-					  .then(res => res.json())
-					  .then(data => {
-						openSpellModal(focusName, data);
-					});
-				});
 			}
 		}
+
+		const inventoryScreen= clone.querySelector("#inventoryScreen");
+		inventoryScreen.innerHTML = ``;
+
+		// inventory
+		if (data.equipment_containers.length != 0)
+		{
+			const ulContainers = document.createElement("ul");
+			ulContainers.classList.add("list-group", "containers-list", "mt-1");
+			Object.values(data.equipment_containers).forEach(eq_container => {
+				const li = document.createElement("li");
+				li.classList.add("text-info", "font-weight-bold", "list-group-item");
+				li.innerHTML = `<i>Container</i>: ${eq_container.containerName}`;
+				ulContainers.appendChild(li);
+			});
+			inventoryScreen.appendChild(ulContainers);
+		}
+
+
+		const ulStuff = document.createElement("ul");
+		ulStuff.classList.add("list-group", "stuff-list", "mt-1");
+		if (data.equipment.length != 0)
+		{
+			Object.values(data.equipment).forEach(stuff => {
+				const li = document.createElement("li");
+				li.classList.add("text-info", "list-group-item");
+				li.innerHTML = `${stuff[0]} [${stuff[1]}]`;
+				ulStuff.appendChild(li);
+			});
+		}
+		else
+		{
+			const li = document.createElement("li");
+			li.classList.add("text-info", "list-group-item");
+			li.innerHTML = `<i>No items in inventory</i>`;
+			ulStuff.appendChild(li);
+		}
+		inventoryScreen.appendChild(ulStuff);
 
 		// Вставляем в DOM
 		app.innerHTML = "";
@@ -549,6 +596,20 @@
 				.then(res => res.json())
 				.then(data => {
 				  openSpellModal(spellName, data);
+				});
+			});
+		  });
+
+		  app.querySelectorAll(".focus-cantrips-list, focus-spells-list").forEach(spellsList => {
+			spellsList.addEventListener("click", (e) => {
+				const li = e.target.closest("li.list-group-item");
+				if (!li) return;
+
+				const focusName = li.textContent.trim();
+				fetch(`/get_spell_description?spell_name=${encodeURIComponent(focusName)}`)
+				  .then(res => res.json())
+				  .then(data => {
+					openSpellModal(focusName, data);
 				});
 			});
 		  });

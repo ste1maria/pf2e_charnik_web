@@ -484,7 +484,8 @@
 		app.innerHTML = "";
 		app.appendChild(clone);
 		setupCheckboxes();
-		
+		setupHpWindow();
+
 		const event = new CustomEvent("characterRendered");
 		app.dispatchEvent(event);
 	}
@@ -664,6 +665,7 @@
 			newHP = currentHP + adjustment;
 		}
 		hpDisplay.textContent = newHP;
+		localStorage.setItem("currentHP", newHP);
 		// Закрываем модальное окно
 		hpModal.style.display = "none";
 	}
@@ -903,4 +905,21 @@
 				localStorage.setItem('checkbox_' + id, cb.checked);
 			});
 		});
+	}
+
+	function setupHpWindow() {
+		const hpDisplay = document.getElementById("hpDisplay");
+		const maxHP = document.getElementById("maxHP");
+
+		const storedMaxHP = localStorage.getItem("maxHP_" + characterId);
+		const storedHP = localStorage.getItem("currentHP" + characterId);
+
+		if (storedMaxHP != null) 
+		{
+			maxHP.textContent = storedMaxHP;
+		}
+		if (storedHP != null)
+		{
+			hpDisplay.textContent = storedHP;
+		}
 	}

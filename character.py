@@ -253,7 +253,7 @@ class Character:
             self.reflex = self.proficiencies["reflex"] + self.con + self.level
             self.perception = self.proficiencies["perception"] + self.wis + self.level
             self.hp = self.attributes['ancestryhp'] + (self.attributes['classhp'] + self.con) * self.level \
-                    + self.attributes['bonushp']
+                    + self.attributes['bonushp'] + self.attributes['bonushpPerLevel'] * self.level
 
             self.skills = {}
             for skill in skills_attributes.keys():

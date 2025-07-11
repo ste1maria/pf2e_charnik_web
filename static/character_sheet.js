@@ -374,6 +374,13 @@
 				const focusTab = clone.querySelector("#tabFocusSpells");
 				const focusTemplate = focusTab.querySelector("#focusSpellsListByLevel");
 
+				const focusPoints = focusTab.querySelector("#focusPoints");
+				//focusPoints.innerHTML
+				focusPoints.innerHTML += `Focus Points: `;
+				for (let i = 0; i < data.focus_points; i++) {
+					focusPoints.innerHTML += `<input type="checkbox" id="focuspoint${i}" style="margin-left:5px">`;
+				}
+
 				focusTab.innerHTML = ""; // очистим старое
 
 				const button = document.createElement("button");
@@ -382,6 +389,8 @@
 				button.textContent = "Focus";
 
 				tabButtonsContainer.appendChild(button);
+
+				focusTab.appendChild(focusPoints);
 
 				// проходим по всем традициям
 				Object.entries(data.focus).forEach(([tradition, abilities], focus) => {
@@ -409,7 +418,7 @@
 
 							const cantripNameDiv = document.createElement("div");
 							cantripNameDiv.classList.add("text-info", "font-weight-bold", "spell-name");
-							cantripNameDiv.textContent = cantrip;
+							cantripNameDiv.textContent = `Cantrip: ${cantrip}`;
 					
 							li.appendChild(cantripNameDiv);
 							ulCantrips?.appendChild(li);
@@ -705,7 +714,7 @@
 		const spellFlairs = document.getElementById("spellFlairs");
 		spellParameters.innerHTML = ``;
 		spellFlairs.innerHTML = ``;
-
+		console.log(spellDescr.area);
 		if (spellDescr.traditions.length > 0)
 		{
 			spellParameters.innerHTML += `Traditions: &nbsp <span class="text-info">${spellDescr.traditions.join(", ")}</span> <br>`
@@ -717,6 +726,10 @@
 		if (spellDescr.range.length > 0)
 		{
 			spellParameters.innerHTML += `Range: &nbsp <span class="text-info">${spellDescr.range}</span><br>`
+		}
+		if (spellDescr.area != null)
+		{
+			spellParameters.innerHTML += `Area: &nbsp <span class="text-info">${spellDescr.area.type}, ${spellDescr.area.value}ft</span><br>`;
 		}
 		if (spellDescr.duration.length > 0)
 		{
@@ -859,13 +872,30 @@
 		ul?.appendChild(li);
 		casterTab.appendChild(spellDcBlock);
 
+		// Tradition and casting type
+		const spellTraditionType = tabSpellsTemplate.content.cloneNode(true);
+		const ulTrad = spellTraditionType.querySelector("ul.list-group");
+		const liTrad = document.createElement("li");
+		liTrad.classList.add("text-info", "font-weight-bold", "list-group-item");
+		liTrad.innerHTML = `Tradition: ${spellCaster.magicTradition} (${spellCaster.spellcastingType})`;
+		ulTrad?.appendChild(liTrad);
+		casterTab.appendChild(spellTraditionType);
+
 		// 3. Для каждого уровня создаём блок
-		spellCaster.spells.forEach(spellLevelData => {
+		spellCaster.spells.forEach((spellLevelData, level) => {
 			const newLevelBlock = tabSpellsTemplate.content.cloneNode(true);
 			// Правим Level X на реальный уровень
 			const levelDiv = newLevelBlock.querySelector(".cast-level");
 			if (levelDiv) {
-			  levelDiv.textContent = `Level ${spellLevelData.spellLevel}`;
+			  levelDiv.innerHTML = `Level ${spellLevelData.spellLevel}`;
+			  if (spellLevelData.spellLevel > 0) {
+				// add number of spells
+				levelDiv.innerHTML += `<div>`;
+				for (let i = 0; i < spellCaster.perDay[level]; i++) {
+					levelDiv.innerHTML += `<input type="checkbox" id="spellCount${level}-${i}">`;
+				}
+				levelDiv.innerHTML += `</div>`;
+			  }
 			}
 		
 			// Удаляем пустой образец <li>

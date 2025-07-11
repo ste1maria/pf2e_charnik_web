@@ -79,7 +79,8 @@ def get_spell_description(spell):
         "cast": "N/A",
         "range": "",
         "duration": "",
-        "flairs": ""
+        "flairs": "",
+        "area": {}
     }
     spell_filename = None
     try:
@@ -95,6 +96,7 @@ def get_spell_description(spell):
                 spell_description["range"] = spell_data.get("system", {}).get("range", {}).get("value", "")
                 spell_description["duration"] = spell_data.get("system", {}).get("duration", {}).get("value", "")
                 spell_description["flairs"] = spell_data.get("system", {}).get("traits", {}).get("value", "")
+                spell_description["area"] = spell_data.get("system", {}).get("area", {})
     except Exception as exc:
         print("Error while reading spell database: ", str(exc))
 

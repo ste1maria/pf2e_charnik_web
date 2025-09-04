@@ -182,6 +182,17 @@
 			  console.error("Ошибка при получении фита:", feat[0], err);
 			});
 		});
+
+		data.archetype_feats.forEach(feat => {
+		  fetch(`/get_feat_description?feat_name=${encodeURIComponent(feat[0])}`)
+			.then(res => res.json())
+			.then(data => {
+				listFeats.appendChild(printFeatWithIcon(featTemplate, feat, data.actionType, data.actions));
+			})
+			.catch(err => {
+			  console.error("Ошибка при получении фита:", feat[0], err);
+			});
+		});
 		
 		data.ancestry_feats.forEach(feat => {
 		  fetch(`/get_feat_description?feat_name=${encodeURIComponent(feat[0])}`)
@@ -868,7 +879,7 @@
 		const ul = spellDcBlock.querySelector("ul.list-group");
 		const li = document.createElement("li");
 		li.classList.add("text-info", "font-weight-bold", "list-group-item");
-		li.innerHTML = `Spell attack: + ${spellDc} <span class="icon-prof ${getSkillProficiency(spellCaster.proficiency)}"></span>`;
+		li.innerHTML = `Spell attack: + ${spellDc} (${spellCaster.ability})<span class="icon-prof ${getSkillProficiency(spellCaster.proficiency)}"></span>`;
 		ul?.appendChild(li);
 		casterTab.appendChild(spellDcBlock);
 

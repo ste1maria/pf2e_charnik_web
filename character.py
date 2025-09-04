@@ -152,6 +152,7 @@ class Character:
     special_feats = []
     skill_feats = []
     ancestry_feats = []
+    archetype_feats = []
 
     specials =  []
     lores = [[]]
@@ -276,6 +277,7 @@ class Character:
             self.special_feats = []
             self.skill_feats = []
             self.ancestry_feats = []
+            self.archetype_feats = []
 
             self.attributes["speed"] = self._correct_speed()
 
@@ -290,6 +292,8 @@ class Character:
                     self.heritage_feats.append([feat[0], feat[4]])
                 elif "Ancestry Feat" in feat:
                     self.ancestry_feats.append([feat[0], feat[4]])
+                elif "Archetype Feat" in feat:
+                    self.archetype_feats.append([feat[0], feat[4]])
 
             for special_feat in self.specials:
                 if special_feat not in self.special_feats:

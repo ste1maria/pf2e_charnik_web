@@ -52,6 +52,41 @@ def get_weapon_flairs(weapon):
 
     return weapon_flairs
 
+def get_weapon_description(weapon):
+    weapon_description = {
+        "description": "N/A",
+        "category": "N/A",
+        "damage": {},
+        "range": "N/A",
+        "reload": "N/A",
+        "hands": "N/A"
+    }
+    weapon_filename = None
+    try:
+        with open(equipment_index_file, "r") as index_file:
+            index = json.load(index_file)
+            weapon_filename = index.get(weapon)
+        if weapon_filename:
+            with open(os.path.join(equipment_dir, weapon_filename), "r") as weapon_file:
+                weapon_data = json.load(weapon_file)
+                weapon_description["description"] = weapon_data.get("system", {}).get("description", {}).get("value", "")
+                weapon_description["category"] = weapon_data.get("system", {}).get("category","")
+                weapon_description["damage"] = weapon_data.get("system", {}).get("damage", {})
+                weapon_description["range"] = weapon_data.get("system", {}).get("range", "")
+                weapon_description["reload"] = weapon_data.get("system", {}).get("reload", {}).get("value", "")
+                hands = weapon_data.get("system", {}).get("usage", {}).get("value", "")
+                if "plus" in hands:
+                    weapon_description["hands"] = "One or two hands"
+                elif "two" in hands:
+                    weapon_description["hands"] = "Two hands"
+                elif "one-hand" in hands:
+                    weapon_description["hands"] = "One hand"
+    except Exception as exc:
+        print("Error while reading weapons database: ", str(exc))
+
+    return weapon_description
+
+
 def get_armor_details(armor):
     armor_details = {"acBonus": 0, "dexCap":0, "checkPenalty":0, "strength" :0, "speedPenalty" : 0}
     armor_filename = None

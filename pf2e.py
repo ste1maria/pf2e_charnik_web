@@ -110,6 +110,21 @@ def get_weapon_flairs():
     return return_value
 
 
+@app.route("/get_weapon_description")
+def get_weapon_description():
+    weapon_name = request.args.get("weapon_name")
+    if not weapon_name:
+        return jsonify({"description": "Недостаточно параметров"}), 400
+
+    return_value = jsonify([])
+    try:
+        return_value = jsonify(db.get_weapon_description(weapon_name))
+    except Exception as exc:
+        print("Error while getting weapon description: ", exc)
+
+    return return_value
+
+
 @app.route("/get_armor_data")
 def get_armor_data():
     armor_name = request.args.get("armor_name")

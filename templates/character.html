@@ -200,7 +200,7 @@
       <div class="screen d-flex align-items-center flex-column" id="armorWeaponScreen">
 		<ul class="list-group text-info mt-2" id="weaponSection">
 			<template id="weaponTemplate">
-				<li class="list-group-item d-flex flex-row" id="weaponEntry">
+				<li class="list-group-item d-flex flex-row weapon-entry" id="weaponEntry">
 					<div class="d-flex flex-column" id="weaponCharacteristics">
 						<div class="text-info font-weight-bold weapon-name" id="weaponName"></div>
 						<div class="text-info" id="weaponDamage"></div>
@@ -299,11 +299,20 @@
 	  <span class="close">&times;</span>
 		<h4 id="spellNameModal" class="text-info"></h4>
 		<div id="spellParameters" class="text-left"></div>
-		<div id="spellFlairs" class="spell-flair-row mt-1"></div>
+		<div id="spellFlairs" class="flair-row mt-1"></div>
 		<div id="spellDescription" class="text-info text-left mt-1"></div>
 	</div>
   </div>
 
+<div id="weaponInfoModal" class="modal hidden">
+	<div class="modal-content">
+	  <span class="close">&times;</span>
+		<h4 id="weaponNameModal" class="text-info"></h4>
+		<div id="weaponFlairsModal" class="flair-row mt-1"></div>
+		<div id="weaponParameters" class="text-left"></div>
+		<div id="weaponDescription" class="text-info text-left mt-1"></div>
+	</div>
+  </div>
 
 
 <script src="{{ url_for('static', filename='character_sheet.js') }}"></script>

@@ -635,6 +635,22 @@
 			});
 		  });
 
+		  app.querySelectorAll(".weapon-entry").forEach(weaponList => {
+			weaponList.addEventListener("click", (e) => {
+				const name = e.target.querySelector(".weapon-name");
+				console.log("click weapon");
+				console.log(name);
+				if (!name) return;
+
+				const weaponName = name.textContent.trim();
+
+				fetch(`/get_weapon_description?weapon_name=${encodeURIComponent(weaponName)}`)
+				  .then(res => res.json())
+				  .then(data => {
+					openWeaponModal(weaponName, data);
+				});
+			});
+		  });
 
 	});
 	
@@ -767,6 +783,69 @@
 
 	closeSpellModal.addEventListener("click", () => {
 		spellModal.style.display = "none";
+	});
+
+	const weaponModal = document.getElementById("weaponInfoModal");
+	const closeWeaponModal = document.querySelector("#weaponInfoModal .close");
+
+	function openWeaponModal(weaponName, data) {
+
+		document.getElementById("weaponNameModal").innerText = `${weaponName}`;
+
+		const weaponParameters = document.getElementById("weaponParameters");
+		const weaponFlairsModal = document.getElementById("weaponFlairsModal");
+		weaponParameters.innerHTML = ``;
+		weaponFlairsModal.innerHTML = ``;
+
+		if (data.category.length > 0)
+		{
+			weaponParameters.innerHTML += `Category: &nbsp <span class="text-info">${data.category}</span> <br>`;
+		}
+		if (data.damage != null)
+		{
+			weaponParameters.innerHTML += `Damage: &nbsp <span class="text-info">
+			${data.damage.dice}${data.damage.die} ${data.damage.damageType}
+			</span><br>`;
+		}
+		if (data.range != null)
+		{
+			weaponParameters.innerHTML += `Range: &nbsp <span class="text-info">${data.range}</span><br>`;
+		}
+		else
+		{
+			weaponParameters.innerHTML += `Range: &nbsp <span class="text-info">melee</span><br>`;
+		}
+		if (data.reload.length > 0)
+		{
+			weaponParameters.innerHTML += `Reload: &nbsp <span class="text-info">${data.reload}</span><br>`;
+		}
+		console.log(data.hands);
+		if (data.hands != null)
+		{
+			weaponParameters.innerHTML += `Hands: &nbsp <span class="text-info">${data.hands}</span><br>`;
+		}
+
+
+		fetch(`/get_weapon_flairs?weapon_name=${encodeURIComponent(weaponName)}`)
+			.then(res => res.json())
+			.then(flairs => {
+				flairs.forEach(flair => {
+					const tag = document.createElement("div");
+					tag.textContent = flair;
+					tag.classList.add("flair-tag"); // кастомный стиль
+					weaponFlairsModal.appendChild(tag);
+				});
+			});
+
+		const weaponDescription = document.getElementById("weaponDescription");
+		weaponDescription.innerHTML = data.description;
+
+		weaponModal.style.display = "block";
+		weaponModal.classList.remove("hidden");
+	}
+	
+	closeWeaponModal.addEventListener("click", () => {
+		weaponModal.style.display = "none";
 	});
 
 	// helper functions

@@ -1544,7 +1544,7 @@ table {
   margin: 0.2em;
 }
 
-.spell-flair-row
+.flair-row
 {
   display: flex;
   flex-wrap: wrap;
